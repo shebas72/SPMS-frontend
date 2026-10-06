@@ -1,0 +1,16 @@
+{
+  "en": { "departmentsPage": {
+    "hint": "Each department's score includes its sub-departments.",
+    "col": { "department": "Department", "current": "Selected month", "ytd": "Year to date", "kpis": "KPIs" },
+    "expand": "Show sub-departments", "collapse": "Hide sub-departments",
+    "empty": "No departments have been set up yet.",
+    "error": "Couldn't load department performance. Check your connection and try again."
+  } },
+  "ar": { "departmentsPage": {
+    "hint": "تشمل نتيجة كل إدارة نتائج الإدارات الفرعية التابعة لها.",
+    "col": { "department": "الإدارة", "current": "الشهر المحدد", "ytd": "منذ بداية السنة", "kpis": "المؤشرات" },
+    "expand": "عرض الإدارات الفرعية", "collapse": "إخفاء الإدارات الفرعية",
+    "empty": "لم يتم إعداد أي إدارات بعد.",
+    "error": "تعذر تحميل أداء الإدارات. تحقق من اتصالك وحاول مرة أخرى."
+  } }
+}

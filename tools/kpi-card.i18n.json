@@ -1,0 +1,20 @@
+{
+  "en": { "kpiCard": {
+    "back": "← All KPIs", "enterData": "Enter data", "latest": "Latest month ({{month}})", "annual": "Annual target",
+    "entered": "Months entered", "enteredValue": "{{count}} of 12", "chartTitle": "Target vs actual",
+    "seriesTarget": "Target", "seriesActual": "Actual", "seriesProjected": "Projected actual", "seriesAchievement": "Achievement %",
+    "projectionNote": "Dashed line: the remaining months if the average achievement so far ({{pct}}% of target) continues.",
+    "noEntries": "No data has been entered for this KPI yet.", "detail": "Monthly detail",
+    "col": { "month": "Month", "target": "Target", "actual": "Actual", "achievement": "Achievement", "status": "Status", "note": "Note / reason" },
+    "notFound": "This KPI doesn't exist or you don't have access to it.", "error": "Couldn't load this KPI. Check your connection and try again."
+  } },
+  "ar": { "kpiCard": {
+    "back": "→ كل المؤشرات", "enterData": "إدخال البيانات", "latest": "آخر شهر ({{month}})", "annual": "المستهدف السنوي",
+    "entered": "الأشهر المُدخلة", "enteredValue": "{{count}} من 12", "chartTitle": "المستهدف مقابل الفعلي",
+    "seriesTarget": "المستهدف", "seriesActual": "الفعلي", "seriesProjected": "الفعلي المتوقع", "seriesAchievement": "نسبة الإنجاز %",
+    "projectionNote": "الخط المتقطع: الأشهر المتبقية إذا استمر متوسط الإنجاز حتى الآن ({{pct}}% من المستهدف).",
+    "noEntries": "لم يتم إدخال بيانات لهذا المؤشر بعد.", "detail": "التفاصيل الشهرية",
+    "col": { "month": "الشهر", "target": "المستهدف", "actual": "الفعلي", "achievement": "الإنجاز", "status": "الحالة", "note": "ملاحظة / سبب" },
+    "notFound": "هذا المؤشر غير موجود أو لا تملك صلاحية الوصول إليه.", "error": "تعذر تحميل هذا المؤشر. تحقق من اتصالك وحاول مرة أخرى."
+  } }
+}

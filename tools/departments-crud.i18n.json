@@ -1,0 +1,20 @@
+{
+  "en": { "departmentsPage": {
+    "add": "Add department", "addChild": "Add sub-department", "edit": "Edit", "delete": "Delete",
+    "newDepartment": "New department", "editDepartment": "Edit department",
+    "name": "Name (English)", "nameAr": "Name (Arabic)", "code": "Code", "parent": "Parent department", "noParent": "None (top level)", "color": "Colour",
+    "save": "Save", "saving": "Saving…", "cancel": "Cancel",
+    "confirmDelete": "Delete \"{{name}}\"?",
+    "confirmDeleteUsed": "\"{{name}}\" has sub-departments or KPIs. The server may refuse to delete it until they are moved. Try anyway?",
+    "deleteError": "This department can't be deleted.", "saveError": "Couldn't save the department. Try again."
+  } },
+  "ar": { "departmentsPage": {
+    "add": "إضافة إدارة", "addChild": "إضافة إدارة فرعية", "edit": "تعديل", "delete": "حذف",
+    "newDepartment": "إدارة جديدة", "editDepartment": "تعديل الإدارة",
+    "name": "الاسم (الإنجليزية)", "nameAr": "الاسم (العربية)", "code": "الرمز", "parent": "الإدارة الأم", "noParent": "بدون (المستوى الأعلى)", "color": "اللون",
+    "save": "حفظ", "saving": "جارٍ الحفظ…", "cancel": "إلغاء",
+    "confirmDelete": "هل تريد حذف \"{{name}}\"؟",
+    "confirmDeleteUsed": "\"{{name}}\" تحتوي على إدارات فرعية أو مؤشرات. قد يرفض الخادم الحذف حتى يتم نقلها. هل تريد المحاولة؟",
+    "deleteError": "لا يمكن حذف هذه الإدارة.", "saveError": "تعذر حفظ الإدارة. حاول مرة أخرى."
+  } }
+}
