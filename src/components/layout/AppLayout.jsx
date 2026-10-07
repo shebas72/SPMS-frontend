@@ -3,7 +3,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import {
-  LayoutDashboard, Landmark, Network, Target, Building2, LineChart, ClipboardEdit, FolderKanban, ListChecks, Menu, LogOut,
+  LayoutDashboard, Landmark, Network, Target, Building2, LineChart, ClipboardEdit, FolderKanban, ListChecks, Menu, LogOut, ListTodo,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/stores/authStore'
@@ -21,6 +21,7 @@ const NAV = [
   { to: '/kpi-entry', key: 'kpiEntry', icon: ClipboardEdit },
   { to: '/projects', key: 'projects', icon: FolderKanban },
   { to: '/analysis', key: 'analysis', icon: ListChecks },
+  { to: '/initiatives', key: 'initiatives', icon: ListTodo }
 ]
 
 export default function AppLayout() {

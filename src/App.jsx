@@ -12,11 +12,14 @@ import KpiEntryPage from '@/features/kpi-entry/KpiEntryPage'
 import KpisPage from '@/features/kpis/KpisPage'
 import KpiCardPage from '@/features/kpis/KpiCardPage'
 import DepartmentsPage from '@/features/departments/DepartmentsPage'
+import AnalysisPage from '@/features/analysis/AnalysisPage'
+import ProjectsPage from '@/features/projects/ProjectsPage'
+import InitiativesPage from '@/features/initiatives/InitiativesPage'
 
 const PAGES = [
   
-  ['projects', 'nav.projects'],
-  ['analysis', 'nav.analysis'],
+  // ['projects', 'nav.projects'],
+  
 ]
 
 export default function App() {
@@ -37,6 +40,9 @@ export default function App() {
           <Route path="kpis" element={<KpisPage />} />
           <Route path="kpis/:id" element={<KpiCardPage />} />
           <Route path="departments" element={<DepartmentsPage />} />
+          <Route path="analysis" element={<AnalysisPage />} />
+          <Route path="projects" element={<ProjectsPage />} />
+          <Route path="initiatives" element={<InitiativesPage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

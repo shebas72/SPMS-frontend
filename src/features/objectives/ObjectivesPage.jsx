@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import api from '@/lib/api'
+import { fetchAll } from '@/lib/fetchAll'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useDashboard } from '@/features/dashboard/useDashboard'
@@ -36,7 +37,7 @@ function Block({ label, block }) {
   )
 }
 
-function ObjectiveCard({ o, monthLabel }) {
+function ObjectiveCard({ o, monthLabel, links }) {
   const { t } = useTranslation()
   const { n, pick } = useFormat()
   const cur = o.current ?? {}
@@ -61,7 +62,10 @@ function ObjectiveCard({ o, monthLabel }) {
         <Block label={monthLabel} block={cur} />
         <Block label={t('dashboard.ytd')} block={ytd} />
       </dl>
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-line pt-3">
+      <p className="mt-4 text-xs text-muted">
+        {links.projects + links.initiatives === 0 ? t('objectives.linkedNone') : t('objectives.linked', { projects: n(links.projects), initiatives: n(links.initiatives), avg: n(links.avg == null ? null : Math.round(links.avg * 10) / 10) })}
+      </p>
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-2 border-t border-line pt-3">
         <Counts data={cur} />
         <span className="text-xs text-muted">{t('strategyMap.kpiCount', { count: cur.kpi_count ?? 0 })}</span>
       </div>
@@ -77,6 +81,13 @@ export default function ObjectivesPage() {
   const [sort, setSort] = useState('order')
   const dash = useDashboard(period)
   const objectives = useObjectives(period, perspectiveId)
+  const year = dash.data?.period.year
+  const projects = useQuery({ queryKey: ['obj-projects', year], queryFn: () => fetchAll('/projects', { year }), enabled: Boolean(year) })
+  const initiatives = useQuery({ queryKey: ['obj-initiatives', year], queryFn: () => fetchAll('/initiatives', { year }), enabled: Boolean(year) })
+  const linksOf = (id) => {
+    const ps = (projects.data ?? []).filter((x) => x.objectives?.some((ob) => ob.id === id))
+    return { projects: ps.length, initiatives: (initiatives.data ?? []).filter((x) => x.strategic_objective_id === id).length, avg: ps.length ? ps.reduce((sum, x) => sum + x.completion_pct, 0) / ps.length : null }
+  }
 
   if (dash.isLoading || objectives.isLoading) return <p className="text-muted">{t('common.loading')}</p>
   if (dash.isError || objectives.isError || !dash.data) {
@@ -131,7 +142,7 @@ export default function ObjectivesPage() {
         <p className="rounded-lg border border-dashed border-line p-6 text-sm text-muted">{t('objectives.empty')}</p>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
-          {rows.map((o) => <ObjectiveCard key={o.id} o={o} monthLabel={monthLabel} />)}
+          {rows.map((o) => <ObjectiveCard key={o.id} o={o} monthLabel={monthLabel} links={linksOf(o.id)} />)}
         </div>
       )}
     </div>

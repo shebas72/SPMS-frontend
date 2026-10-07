@@ -1,0 +1,46 @@
+{
+  "en": {
+    "nav": { "initiatives": "Initiatives" },
+    "projects": {
+      "initialPct": "Starting completion (%), optional",
+      "noProgress": "No progress reported yet. Completion is reported monthly, or calculated automatically once the project has initiatives.",
+      "initiatives": "Linked initiatives",
+      "suggested": "Calculated from {{count}} linked initiative(s): {{value}}%. This value is pre-filled; change it to override."
+    },
+    "objectives": { "linked": "{{projects}} projects · {{initiatives}} initiatives · average project completion {{avg}}%", "linkedNone": "No linked projects or initiatives yet" },
+    "initiatives": {
+      "add": "Add initiative", "empty": "No initiatives for this year.", "overall": "Overall initiatives performance", "card": "Initiative performance card",
+      "initiative": "Initiative", "objective": "Strategic objective", "owner": "Owner", "projects": "Linked projects", "noProjects": "No projects are linked to this initiative.",
+      "linkedProjects": "Linked projects", "linkedKpis": "Linked KPIs", "newInitiative": "New initiative", "editInitiative": "Edit initiative",
+      "tasks": "Execution plan", "addTask": "Add task", "noTasks": "No tasks yet. Add tasks to calculate this initiative's completion automatically.",
+      "rollupHint": "The initiative's completion is the average of its tasks, and feeds the projects it is linked to.",
+      "overrideHint": "Reporting a month by hand overrides the automatic value for that month.",
+      "taskName": "Task (English)", "taskNameAr": "Task (Arabic)", "dueDate": "Due date",
+      "taskStatus": { "pending": "Pending", "in_progress": "In progress", "completed": "Completed", "overdue": "Overdue" },
+      "confirmDelete": "Delete this initiative, its tasks and its progress history?", "confirmDeleteTask": "Delete this task?",
+      "deleteError": "That action failed. Try again.", "error": "Couldn't load the initiatives. Check your connection and try again."
+    }
+  },
+  "ar": {
+    "nav": { "initiatives": "المبادرات" },
+    "projects": {
+      "initialPct": "نسبة الإنجاز الابتدائية (%)، اختياري",
+      "noProgress": "لم يتم تسجيل أي تقدم بعد. تُسجَّل نسبة الإنجاز شهريًا، أو تُحسب تلقائيًا عند ربط المشروع بمبادرات.",
+      "initiatives": "المبادرات المرتبطة",
+      "suggested": "محسوبة من {{count}} مبادرة مرتبطة: {{value}}%. تمت تعبئة القيمة مسبقًا؛ عدّلها لتجاوزها."
+    },
+    "objectives": { "linked": "{{projects}} مشاريع · {{initiatives}} مبادرات · متوسط إنجاز المشاريع {{avg}}%", "linkedNone": "لا توجد مشاريع أو مبادرات مرتبطة بعد" },
+    "initiatives": {
+      "add": "إضافة مبادرة", "empty": "لا توجد مبادرات لهذه السنة.", "overall": "الأداء العام للمبادرات", "card": "بطاقة أداء المبادرة",
+      "initiative": "المبادرة", "objective": "الهدف الاستراتيجي", "owner": "المسؤول", "projects": "المشاريع المرتبطة", "noProjects": "لا توجد مشاريع مرتبطة بهذه المبادرة.",
+      "linkedProjects": "المشاريع المرتبطة", "linkedKpis": "المؤشرات المرتبطة", "newInitiative": "مبادرة جديدة", "editInitiative": "تعديل المبادرة",
+      "tasks": "خطة التنفيذ", "addTask": "إضافة مهمة", "noTasks": "لا توجد مهام بعد. أضف مهام لحساب نسبة إنجاز المبادرة تلقائيًا.",
+      "rollupHint": "نسبة إنجاز المبادرة هي متوسط مهامها، وتغذّي المشاريع المرتبطة بها.",
+      "overrideHint": "تسجيل شهر يدويًا يتجاوز القيمة التلقائية لذلك الشهر.",
+      "taskName": "المهمة (الإنجليزية)", "taskNameAr": "المهمة (العربية)", "dueDate": "تاريخ الاستحقاق",
+      "taskStatus": { "pending": "قيد الانتظار", "in_progress": "قيد التنفيذ", "completed": "مكتملة", "overdue": "متأخرة" },
+      "confirmDelete": "هل تريد حذف هذه المبادرة ومهامها وسجل تقدمها؟", "confirmDeleteTask": "هل تريد حذف هذه المهمة؟",
+      "deleteError": "تعذر تنفيذ الإجراء. حاول مرة أخرى.", "error": "تعذر تحميل المبادرات. تحقق من اتصالك وحاول مرة أخرى."
+    }
+  }
+}

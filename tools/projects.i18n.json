@@ -1,0 +1,28 @@
+{
+  "en": { "projects": {
+    "view": "View", "viewMonth": "Month", "viewYtd": "Year to date", "add": "Add project", "empty": "No projects for this year.",
+    "overall": "Overall projects performance", "overallHint": "Selected month {{month}}% · Year-to-date average {{ytd}}%", "legend": "Colour legend",
+    "offTimeline": "Behind timeline", "onTimeline": "On timeline", "planned": "Planned", "actual": "Actual", "history": "Monthly progress",
+    "reportProgress": "Report progress", "month": "Month", "completion": "Completion (%)", "note": "Note", "saveProgress": "Save progress",
+    "newProject": "New project", "editProject": "Edit project", "code": "Code", "name": "Name (English)", "nameAr": "Name (Arabic)",
+    "description": "Description (English)", "descriptionAr": "Description (Arabic)", "type": "Type", "status": "Status", "department": "Department", "objective": "Strategic objective",
+    "plannedStart": "Planned start", "plannedEnd": "Planned end", "actualStart": "Actual start", "actualEnd": "Actual end",
+    "types": { "strategic": "Strategic", "digital_transformation": "Digital transformation", "operational": "Operational" },
+    "statuses": { "not_started": "Not started", "in_progress": "In progress", "completed": "Completed", "delayed": "Delayed", "cancelled": "Cancelled" },
+    "save": "Save", "saving": "Saving…", "cancel": "Cancel", "edit": "Edit", "delete": "Delete", "confirmDelete": "Delete this project and its progress history?",
+    "saveError": "Couldn't save. Try again.", "deleteError": "This project can't be deleted.", "error": "Couldn't load the projects. Check your connection and try again."
+  } },
+  "ar": { "projects": {
+    "view": "العرض", "viewMonth": "الشهر", "viewYtd": "منذ بداية السنة", "add": "إضافة مشروع", "empty": "لا توجد مشاريع لهذه السنة.",
+    "overall": "الأداء العام للمشاريع", "overallHint": "الشهر المحدد {{month}}% · متوسط منذ بداية السنة {{ytd}}%", "legend": "دليل الألوان",
+    "offTimeline": "متأخر عن الجدول", "onTimeline": "ضمن الجدول الزمني", "planned": "المخطط", "actual": "الفعلي", "history": "التقدم الشهري",
+    "reportProgress": "تسجيل التقدم", "month": "الشهر", "completion": "نسبة الإنجاز (%)", "note": "ملاحظة", "saveProgress": "حفظ التقدم",
+    "newProject": "مشروع جديد", "editProject": "تعديل المشروع", "code": "الرمز", "name": "الاسم (الإنجليزية)", "nameAr": "الاسم (العربية)",
+    "description": "الوصف (الإنجليزية)", "descriptionAr": "الوصف (العربية)", "type": "النوع", "status": "الحالة", "department": "الإدارة", "objective": "الهدف الاستراتيجي",
+    "plannedStart": "بداية مخططة", "plannedEnd": "نهاية مخططة", "actualStart": "بداية فعلية", "actualEnd": "نهاية فعلية",
+    "types": { "strategic": "استراتيجي", "digital_transformation": "تحول رقمي", "operational": "تشغيلي" },
+    "statuses": { "not_started": "لم يبدأ", "in_progress": "قيد التنفيذ", "completed": "مكتمل", "delayed": "متأخر", "cancelled": "ملغى" },
+    "save": "حفظ", "saving": "جارٍ الحفظ…", "cancel": "إلغاء", "edit": "تعديل", "delete": "حذف", "confirmDelete": "هل تريد حذف هذا المشروع وسجل تقدمه؟",
+    "saveError": "تعذر الحفظ. حاول مرة أخرى.", "deleteError": "لا يمكن حذف هذا المشروع.", "error": "تعذر تحميل المشاريع. تحقق من اتصالك وحاول مرة أخرى."
+  } }
+}

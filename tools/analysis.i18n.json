@@ -1,0 +1,32 @@
+{
+  "en": { "analysis": {
+    "groups": "KPI groups", "noKpis": "No KPIs in this group.", "propose": "Propose action",
+    "col": { "kpi": "KPI", "code": "Code", "achievement": "% Achievement", "gap": "Gap", "proposals": "Corrective proposal", "status": "Status" },
+    "lowPerformers": "Low performers (0–60%)", "otherKpis": "Other KPIs", "gapAnalysis": "Gap analysis", "noGapData": "No proposals for this period yet.",
+    "causes": { "resources_shortage": "Resources shortage", "technical_challenges": "Technical challenges", "administrative": "Administrative", "lack_of_followup": "Lack of follow-up", "other": "Other" },
+    "status": { "pending": "Pending", "in_progress": "In progress", "completed": "Completed", "rejected": "Rejected" },
+    "proposals": "Corrective proposals", "allStatuses": "All statuses", "noProposals": "No proposals for this period.",
+    "pcol": { "title": "Proposal", "kpi": "KPI", "cause": "Root cause", "due": "Due date", "by": "Submitted by", "status": "Status" },
+    "approve": "Approve", "reject": "Reject", "complete": "Mark completed", "edit": "Edit", "delete": "Delete", "confirmDelete": "Delete this proposal?",
+    "newProposal": "Propose a corrective action", "editProposal": "Edit proposal",
+    "titleEn": "Title (English)", "titleAr": "Title (Arabic)", "descEn": "Description (English)", "descAr": "Description (Arabic)",
+    "rootCause": "Root cause", "causeDetail": "Root cause details", "dueDate": "Due date",
+    "save": "Submit", "saving": "Saving…", "cancel": "Cancel", "saveError": "Couldn't save the proposal. Try again.",
+    "actionError": "That action failed. Try again.", "error": "Couldn't load the analysis. Check your connection and try again."
+  } },
+  "ar": { "analysis": {
+    "groups": "مجموعات المؤشرات", "noKpis": "لا توجد مؤشرات في هذه المجموعة.", "propose": "اقتراح إجراء",
+    "col": { "kpi": "المؤشر", "code": "الرمز", "achievement": "نسبة الإنجاز", "gap": "الفجوة", "proposals": "المقترح التصحيحي", "status": "الحالة" },
+    "lowPerformers": "المؤشرات ضعيفة الأداء (0–60%)", "otherKpis": "المؤشرات الأخرى", "gapAnalysis": "تحليل الفجوة", "noGapData": "لا توجد مقترحات لهذه الفترة بعد.",
+    "causes": { "resources_shortage": "نقص الموارد", "technical_challenges": "تحديات تقنية", "administrative": "إدارية", "lack_of_followup": "ضعف المتابعة", "other": "أخرى" },
+    "status": { "pending": "قيد المراجعة", "in_progress": "قيد التنفيذ", "completed": "مكتمل", "rejected": "مرفوض" },
+    "proposals": "المقترحات التصحيحية", "allStatuses": "كل الحالات", "noProposals": "لا توجد مقترحات لهذه الفترة.",
+    "pcol": { "title": "المقترح", "kpi": "المؤشر", "cause": "السبب الجذري", "due": "تاريخ الاستحقاق", "by": "مقدَّم من", "status": "الحالة" },
+    "approve": "اعتماد", "reject": "رفض", "complete": "تحديد كمكتمل", "edit": "تعديل", "delete": "حذف", "confirmDelete": "هل تريد حذف هذا المقترح؟",
+    "newProposal": "اقتراح إجراء تصحيحي", "editProposal": "تعديل المقترح",
+    "titleEn": "العنوان (الإنجليزية)", "titleAr": "العنوان (العربية)", "descEn": "الوصف (الإنجليزية)", "descAr": "الوصف (العربية)",
+    "rootCause": "السبب الجذري", "causeDetail": "تفاصيل السبب الجذري", "dueDate": "تاريخ الاستحقاق",
+    "save": "إرسال", "saving": "جارٍ الحفظ…", "cancel": "إلغاء", "saveError": "تعذر حفظ المقترح. حاول مرة أخرى.",
+    "actionError": "تعذر تنفيذ الإجراء. حاول مرة أخرى.", "error": "تعذر تحميل التحليل. تحقق من اتصالك وحاول مرة أخرى."
+  } }
+}
