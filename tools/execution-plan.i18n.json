@@ -1,0 +1,24 @@
+{
+  "en": {
+    "nav": { "executionPlan": "Execution plan" },
+    "executionPlan": {
+      "hint": "Projects of the selected year by department. Cancelled projects are not counted.",
+      "aligned": "Projects aligned with the timeline", "alignedSummary": "{{aligned}} of {{total}} projects on timeline",
+      "alignedRow": "{{aligned}} on timeline, {{off}} behind timeline", "onTimeline": "On timeline", "offTimeline": "Behind timeline",
+      "achievement": "% Achievement", "overall": "Overall achievement", "achieved": "Achieved", "unachieved": "Unachieved",
+      "unassigned": "No department", "empty": "No projects for this year yet.",
+      "error": "Couldn't load the execution plan. Check your connection and try again."
+    }
+  },
+  "ar": {
+    "nav": { "executionPlan": "خطة التنفيذ" },
+    "executionPlan": {
+      "hint": "مشاريع السنة المحددة حسب الإدارة. لا تُحتسب المشاريع الملغاة.",
+      "aligned": "المشاريع المتوافقة مع الجدول الزمني", "alignedSummary": "{{aligned}} من {{total}} مشروعًا ضمن الجدول الزمني",
+      "alignedRow": "{{aligned}} ضمن الجدول الزمني، {{off}} متأخرة", "onTimeline": "ضمن الجدول الزمني", "offTimeline": "متأخرة عن الجدول",
+      "achievement": "نسبة الإنجاز %", "overall": "الإنجاز العام", "achieved": "محقق", "unachieved": "غير محقق",
+      "unassigned": "بدون إدارة", "empty": "لا توجد مشاريع لهذه السنة بعد.",
+      "error": "تعذر تحميل خطة التنفيذ. تحقق من اتصالك وحاول مرة أخرى."
+    }
+  }
+}

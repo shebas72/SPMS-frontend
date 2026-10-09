@@ -1,0 +1,58 @@
+{
+  "en": {
+    "nav": { "users": "Team", "settings": "Settings" },
+    "team": {
+      "hint": "Invite colleagues from your organisation and choose what each person can do.", "adminOnly": "Only company admins can manage the team.",
+      "inviteTitle": "Invite a colleague", "email": "Email", "role": "Role", "send": "Send invitation", "sending": "Sending…", "inviteLink": "Invitation link",
+      "roles": { "admin": "Admin", "manager": "Manager", "viewer": "Viewer" },
+      "roleHints": { "admin": "full access, manages the team and settings", "manager": "adds and edits data, reviews proposals", "viewer": "read-only" },
+      "sentEmailed": "Invitation emailed to {{email}}. You can also share this link:", "sentLinkOnly": "The email couldn't be sent. Share this link with {{email}}:",
+      "copy": "Copy link", "copied": "Copied",
+      "pending": "Pending invitations", "noPending": "No pending invitations.", "expires": "Expires {{date}}", "expired": "Expired",
+      "resend": "Resend (new link)", "revoke": "Revoke", "confirmRevoke": "Revoke this invitation?",
+      "members": "Team members", "you": "(you)", "col": { "name": "Name", "email": "Email", "role": "Role", "status": "Status" },
+      "active": "Active", "inactive": "Deactivated", "deactivate": "Deactivate", "activate": "Reactivate",
+      "confirmDeactivate": "Deactivate {{name}}? They will be signed out and lose access.",
+      "actionError": "That action failed. Try again.", "error": "Couldn't load the team. Check your connection and try again."
+    },
+    "invite": {
+      "title": "Join {{company}}", "intro": "You've been invited as {{role}} with {{email}}. Choose your name and password to get started.",
+      "name": "Your name", "password": "Password (at least 8 characters)", "confirm": "Confirm password", "submit": "Create account", "creating": "Creating…",
+      "invalid": "This invitation link is invalid. Ask your admin for a new one.", "error": "Couldn't create your account. Try again."
+    },
+    "settings": {
+      "adminOnly": "Only company admins can change the settings.", "profile": "Company profile", "name": "Company name (English)", "nameAr": "Company name (Arabic)",
+      "timezone": "Time zone", "language": "Default language", "logo": "Logo", "noLogo": "No logo yet", "upload": "Upload logo", "replace": "Replace logo",
+      "uploading": "Uploading…", "removeLogo": "Remove logo", "logoHint": "PNG, JPG or WebP, up to 2 MB.",
+      "save": "Save changes", "saving": "Saving…", "saved": "Saved.", "saveError": "Couldn't save the settings. Try again.", "error": "Couldn't load the settings. Check your connection and try again."
+    }
+  },
+  "ar": {
+    "nav": { "users": "الفريق", "settings": "الإعدادات" },
+    "team": {
+      "hint": "ادعُ زملاءك من مؤسستك وحدّد ما يمكن لكل شخص فعله.", "adminOnly": "إدارة الفريق متاحة لمدراء الشركة فقط.",
+      "inviteTitle": "دعوة زميل", "email": "البريد الإلكتروني", "role": "الدور", "send": "إرسال الدعوة", "sending": "جارٍ الإرسال…", "inviteLink": "رابط الدعوة",
+      "roles": { "admin": "مدير النظام", "manager": "مدير", "viewer": "مشاهد" },
+      "roleHints": { "admin": "صلاحية كاملة وإدارة الفريق والإعدادات", "manager": "إضافة البيانات وتعديلها ومراجعة المقترحات", "viewer": "للقراءة فقط" },
+      "sentEmailed": "تم إرسال الدعوة إلى {{email}}. يمكنك أيضًا مشاركة هذا الرابط:", "sentLinkOnly": "تعذر إرسال البريد. شارك هذا الرابط مع {{email}}:",
+      "copy": "نسخ الرابط", "copied": "تم النسخ",
+      "pending": "الدعوات المعلّقة", "noPending": "لا توجد دعوات معلّقة.", "expires": "تنتهي في {{date}}", "expired": "منتهية",
+      "resend": "إعادة الإرسال (رابط جديد)", "revoke": "إلغاء", "confirmRevoke": "هل تريد إلغاء هذه الدعوة؟",
+      "members": "أعضاء الفريق", "you": "(أنت)", "col": { "name": "الاسم", "email": "البريد الإلكتروني", "role": "الدور", "status": "الحالة" },
+      "active": "نشط", "inactive": "معطّل", "deactivate": "تعطيل", "activate": "إعادة التفعيل",
+      "confirmDeactivate": "هل تريد تعطيل {{name}}؟ سيتم تسجيل خروجه وفقدان وصوله.",
+      "actionError": "تعذر تنفيذ الإجراء. حاول مرة أخرى.", "error": "تعذر تحميل الفريق. تحقق من اتصالك وحاول مرة أخرى."
+    },
+    "invite": {
+      "title": "الانضمام إلى {{company}}", "intro": "تمت دعوتك بدور {{role}} باستخدام {{email}}. اختر اسمك وكلمة المرور للبدء.",
+      "name": "اسمك", "password": "كلمة المرور (8 أحرف على الأقل)", "confirm": "تأكيد كلمة المرور", "submit": "إنشاء الحساب", "creating": "جارٍ الإنشاء…",
+      "invalid": "رابط الدعوة غير صالح. اطلب من المدير رابطًا جديدًا.", "error": "تعذر إنشاء حسابك. حاول مرة أخرى."
+    },
+    "settings": {
+      "adminOnly": "تغيير الإعدادات متاح لمدراء الشركة فقط.", "profile": "بيانات الشركة", "name": "اسم الشركة (الإنجليزية)", "nameAr": "اسم الشركة (العربية)",
+      "timezone": "المنطقة الزمنية", "language": "اللغة الافتراضية", "logo": "الشعار", "noLogo": "لا يوجد شعار بعد", "upload": "رفع الشعار", "replace": "استبدال الشعار",
+      "uploading": "جارٍ الرفع…", "removeLogo": "إزالة الشعار", "logoHint": "PNG أو JPG أو WebP، حتى 2 ميغابايت.",
+      "save": "حفظ التغييرات", "saving": "جارٍ الحفظ…", "saved": "تم الحفظ.", "saveError": "تعذر حفظ الإعدادات. حاول مرة أخرى.", "error": "تعذر تحميل الإعدادات. تحقق من اتصالك وحاول مرة أخرى."
+    }
+  }
+}

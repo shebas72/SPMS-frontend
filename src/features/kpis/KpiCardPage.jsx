@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
@@ -21,6 +21,93 @@ function Tile({ label, children }) {
       <p className="text-xs text-muted">{label}</p>
       <div className="mt-2">{children}</div>
     </div>
+  )
+}
+
+const NUMERIC_FIELDS = ['actual_value', 'target_value', 'annual_target', 'weight', 'threshold_red', 'threshold_yellow']
+const BOOLEAN_FIELDS = ['is_active', 'has_recovery_target']
+const NO_VALUE = ['kpi_created']
+
+function History({ id }) {
+  const { t } = useTranslation()
+  const { lang, monthLong } = useFormat()
+  const [page, setPage] = useState(1)
+  const q = useQuery({
+    queryKey: ['kpi-history', id, page],
+    queryFn: async () => (await api.get(`/kpis/${id}/history`, { params: { page } })).data,
+    placeholderData: (prev) => prev,
+  })
+
+  const loc = lang === 'ar' ? 'ar-u-nu-latn' : lang
+  const numFmt = new Intl.NumberFormat(loc, { maximumFractionDigits: 4 })
+  const dateFmt = new Intl.DateTimeFormat(loc, { dateStyle: 'medium', timeStyle: 'short' })
+
+  const show = (field, v) => {
+    if (v == null || v === '') return '—'
+    if (NUMERIC_FIELDS.includes(field)) return numFmt.format(Number(v))
+    if (BOOLEAN_FIELDS.includes(field)) return t(v === '1' ? 'kpiHistory.yes' : 'kpiHistory.no')
+    if (field === 'data_status') return t(`kpiHistory.dataStatus.${v}`, { defaultValue: v })
+    if (field === 'incomplete_reason') return t(`kpiEntry.reasons.${v}`, { defaultValue: v })
+    if (field === 'direction') return t(`kpiList.directions.${v}`, { defaultValue: v })
+    if (field === 'frequency') return t(`kpiList.frequencys.${v}`, { defaultValue: v })
+    return v
+  }
+
+  const rows = q.data?.data ?? []
+  const meta = q.data?.meta
+  const creator = q.data?.creator
+
+  return (
+    <section className="overflow-x-auto rounded-lg border border-line bg-white">
+      <div className="p-5 pb-3">
+        <h2 className="text-sm font-semibold">{t('kpiHistory.title')}</h2>
+        {creator && (
+          <p className="mt-1 text-xs text-muted">
+            {t('kpiHistory.createdBy', { name: creator.name ?? '—', date: creator.at ? dateFmt.format(new Date(creator.at)) : '—' })}
+          </p>
+        )}
+      </div>
+      {q.isLoading ? (
+        <p className="p-5 pt-0 text-sm text-muted">{t('common.loading')}</p>
+      ) : q.isError ? (
+        <p className="p-5 pt-0 text-sm text-muted">{t('kpiHistory.error')}</p>
+      ) : rows.length === 0 ? (
+        <p className="p-5 pt-0 text-sm text-muted">{t('kpiHistory.empty')}</p>
+      ) : (
+        <>
+          <table className="w-full min-w-[720px] text-sm">
+            <thead className="border-y border-line text-xs text-muted">
+              <tr>{['when', 'who', 'what', 'from', 'to'].map((c) => <th key={c} className="px-4 py-2.5 text-start font-medium">{t(`kpiHistory.col.${c}`)}</th>)}</tr>
+            </thead>
+            <tbody className="divide-y divide-line">
+              {rows.map((r) => {
+                const period = r.month ? `${monthLong(r.month)} ${r.year}` : null
+                const first = r.field && !NO_VALUE.includes(r.action) ? t(`kpiHistory.field.${r.field}`, { defaultValue: r.field }) : t(`kpiHistory.action.${r.action}`)
+                return (
+                  <tr key={r.id}>
+                    <td className="whitespace-nowrap px-4 py-2.5 text-muted">{dateFmt.format(new Date(r.at))}</td>
+                    <td className="px-4 py-2.5">{r.user ?? t('kpiHistory.unknownUser')}</td>
+                    <td className="px-4 py-2.5">
+                      <p className="font-medium">{first}</p>
+                      <p className="text-xs text-muted">{[t(`kpiHistory.action.${r.action}`), period].filter(Boolean).join(' · ')}</p>
+                    </td>
+                    <td className="px-4 py-2.5 tabular-nums text-muted">{r.field ? show(r.field, r.old) : '—'}</td>
+                    <td className="px-4 py-2.5 tabular-nums">{r.field ? show(r.field, r.new) : '—'}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+          {meta?.last_page > 1 && (
+            <div className="flex items-center justify-between border-t border-line px-4 py-3 text-xs text-muted">
+              <button type="button" className={linkBtn} disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>{t('kpiHistory.previous')}</button>
+              <span>{t('kpiHistory.page', { page, total: meta.last_page })}</span>
+              <button type="button" className={linkBtn} disabled={page >= meta.last_page} onClick={() => setPage((p) => p + 1)}>{t('kpiHistory.next')}</button>
+            </div>
+          )}
+        </>
+      )}
+    </section>
   )
 }
 
@@ -166,6 +253,8 @@ export default function KpiCardPage() {
           </tbody>
         </table>
       </section>
+
+      <History id={id} />
     </div>
   )
 }

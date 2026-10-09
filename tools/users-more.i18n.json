@@ -1,0 +1,34 @@
+{
+  "en": {
+    "team": {
+      "addTitle": "Add a user directly", "addHint": "Creates the account straight away, with the password you set or a temporary one shown once. No email is sent.",
+      "passwordOptional": "Password (optional)", "addUser": "Add user", "adding": "Adding…", "created": "{{email}} was added.",
+      "tempPassword": "Temporary password, shown once. Share it with the person:", "tempPasswordLabel": "Temporary password",
+      "edit": "Edit", "editTitle": "Edit {{name}}", "newPassword": "New password (leave empty to keep)",
+      "resetHint": "Setting a new password signs the person out on every device.", "selfHint": "Change your own password from your profile.",
+      "save": "Save", "saving": "Saving…", "cancel": "Cancel"
+    },
+    "profile": {
+      "title": "My profile", "details": "Your details", "name": "Name", "email": "Email", "currentForEmail": "Current password (needed to change your email)",
+      "save": "Save changes", "saving": "Saving…", "saved": "Saved.", "error": "That didn't work. Try again.",
+      "passwordTitle": "Change password", "current": "Current password", "new": "New password (at least 8 characters)", "confirm": "Confirm new password",
+      "change": "Change password", "passwordChanged": "Password changed.", "passwordHint": "Your other sessions are signed out when you change it."
+    }
+  },
+  "ar": {
+    "team": {
+      "addTitle": "إضافة مستخدم مباشرة", "addHint": "يُنشأ الحساب فورًا بكلمة المرور التي تحددها أو بكلمة مرور مؤقتة تظهر مرة واحدة. لا يتم إرسال بريد إلكتروني.",
+      "passwordOptional": "كلمة المرور (اختياري)", "addUser": "إضافة مستخدم", "adding": "جارٍ الإضافة…", "created": "تمت إضافة {{email}}.",
+      "tempPassword": "كلمة مرور مؤقتة تظهر مرة واحدة. شاركها مع الشخص:", "tempPasswordLabel": "كلمة المرور المؤقتة",
+      "edit": "تعديل", "editTitle": "تعديل {{name}}", "newPassword": "كلمة مرور جديدة (اتركها فارغة للإبقاء على الحالية)",
+      "resetHint": "تعيين كلمة مرور جديدة يسجّل خروج الشخص من جميع أجهزته.", "selfHint": "غيّر كلمة مرورك من ملفك الشخصي.",
+      "save": "حفظ", "saving": "جارٍ الحفظ…", "cancel": "إلغاء"
+    },
+    "profile": {
+      "title": "ملفي الشخصي", "details": "بياناتك", "name": "الاسم", "email": "البريد الإلكتروني", "currentForEmail": "كلمة المرور الحالية (مطلوبة لتغيير بريدك)",
+      "save": "حفظ التغييرات", "saving": "جارٍ الحفظ…", "saved": "تم الحفظ.", "error": "تعذر تنفيذ الطلب. حاول مرة أخرى.",
+      "passwordTitle": "تغيير كلمة المرور", "current": "كلمة المرور الحالية", "new": "كلمة المرور الجديدة (8 أحرف على الأقل)", "confirm": "تأكيد كلمة المرور الجديدة",
+      "change": "تغيير كلمة المرور", "passwordChanged": "تم تغيير كلمة المرور.", "passwordHint": "يتم تسجيل خروج جلساتك الأخرى عند تغييرها."
+    }
+  }
+}

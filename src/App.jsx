@@ -15,6 +15,11 @@ import DepartmentsPage from '@/features/departments/DepartmentsPage'
 import AnalysisPage from '@/features/analysis/AnalysisPage'
 import ProjectsPage from '@/features/projects/ProjectsPage'
 import InitiativesPage from '@/features/initiatives/InitiativesPage'
+import ExecutionPlanPage from '@/features/execution-plan/ExecutionPlanPage'
+import UsersPage from '@/features/team/UsersPage'
+import SettingsPage from '@/features/settings/SettingsPage'
+import AcceptInvitePage from '@/features/auth/AcceptInvitePage'
+import ProfilePage from '@/features/profile/ProfilePage'
 
 const PAGES = [
   
@@ -26,6 +31,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/accept-invite" element={<AcceptInvitePage />} />
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route index element={<DashboardPage />} />
@@ -43,6 +49,10 @@ export default function App() {
           <Route path="analysis" element={<AnalysisPage />} />
           <Route path="projects" element={<ProjectsPage />} />
           <Route path="initiatives" element={<InitiativesPage />} />
+          <Route path="execution-plan" element={<ExecutionPlanPage />} />
+          <Route path="users" element={<UsersPage />} />
+          <Route path="settings" element={<SettingsPage />} />
+          <Route path="profile" element={<ProfilePage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

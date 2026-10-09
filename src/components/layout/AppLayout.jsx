@@ -1,15 +1,18 @@
 import { useState } from 'react'
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import {
-  LayoutDashboard, Landmark, Network, Target, Building2, LineChart, ClipboardEdit, FolderKanban, ListChecks, Menu, LogOut, ListTodo,
+  LayoutDashboard, Landmark, Network, Target, Building2, LineChart, ClipboardEdit, FolderKanban, ListChecks, Menu, LogOut, ListTodo, CalendarCheck, Settings as SettingsIcon, Users,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/stores/authStore'
 import { fetchMe, logout } from '@/features/auth/authApi'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import { Button } from '@/components/ui/button'
+import { isAdmin } from '@/lib/admin'
+
+
 
 const NAV = [
   { to: '/', key: 'dashboard', icon: LayoutDashboard, end: true },
@@ -21,7 +24,10 @@ const NAV = [
   { to: '/kpi-entry', key: 'kpiEntry', icon: ClipboardEdit },
   { to: '/projects', key: 'projects', icon: FolderKanban },
   { to: '/analysis', key: 'analysis', icon: ListChecks },
-  { to: '/initiatives', key: 'initiatives', icon: ListTodo }
+  { to: '/initiatives', key: 'initiatives', icon: ListTodo },
+  { to: '/execution-plan', key: 'executionPlan', icon: CalendarCheck },
+  { to: '/users', key: 'users', icon: Users, admin: true },
+  { to: '/settings', key: 'settings', icon: SettingsIcon, admin: true },
 ]
 
 export default function AppLayout() {
@@ -63,10 +69,12 @@ export default function AppLayout() {
 )}
       >
         <div className="flex h-16 items-center border-b border-line px-5">
-          <span className="text-base font-semibold text-brand">{t('app.name')}</span>
+         {user?.company?.logo_url
+  ? <img src={user.company.logo_url} alt={companyLabel} className="h-9 max-w-[10rem] object-contain" />
+  : <span className="text-base font-semibold text-brand">{t('app.name')}</span>}
         </div>
         <nav className="flex flex-col gap-1 p-3">
-          {NAV.map(({ to, key, icon: Icon, end }) => (
+          {NAV.filter((i) => !i.admin || isAdmin(user)).map(({ to, key, icon: Icon, end }) => (
             <NavLink
               key={to}
               to={to}
@@ -94,7 +102,7 @@ export default function AppLayout() {
           </Button>
           <div className="min-w-0 flex-1 truncate text-sm text-muted">{companyLabel}</div>
           <LanguageSwitcher />
-          <div className="hidden text-sm font-medium sm:block">{user?.name}</div>
+          <div className="hidden text-sm font-medium sm:block"><Link to="/profile" className="hidden text-sm font-medium hover:underline sm:block">{user?.name}</Link></div>
           <Button variant="outline" size="sm" onClick={signOut}>
             <LogOut className="h-4 w-4 rtl:-scale-x-100" aria-hidden="true" />
             {t('auth.signOut')}
