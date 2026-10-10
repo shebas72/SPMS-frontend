@@ -20,6 +20,7 @@ import UsersPage from '@/features/team/UsersPage'
 import SettingsPage from '@/features/settings/SettingsPage'
 import AcceptInvitePage from '@/features/auth/AcceptInvitePage'
 import ProfilePage from '@/features/profile/ProfilePage'
+import TeamPerformancePage from '@/features/team-performance/TeamPerformancePage'
 
 const PAGES = [
   
@@ -50,6 +51,7 @@ export default function App() {
           <Route path="projects" element={<ProjectsPage />} />
           <Route path="initiatives" element={<InitiativesPage />} />
           <Route path="execution-plan" element={<ExecutionPlanPage />} />
+          <Route path="team-performance" element={<TeamPerformancePage />} />
           <Route path="users" element={<UsersPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="profile" element={<ProfilePage />} />

@@ -5,17 +5,14 @@ import { Pencil, Plus, Trash2 } from 'lucide-react'
 import api from '@/lib/api'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { isAdmin } from '@/lib/admin'
 import { useAuthStore } from '@/stores/authStore'
 import { useFormat } from '@/features/dashboard/ui'
 
 const KEY = ['strategy-house']
 const field = 'w-full rounded-md border border-line bg-white px-3 py-2 text-sm'
 
-// The API enforces admin/manager on writes. If the user object carries no role info, show the controls and let a 403 surface.
-function canEdit(user) {
-  const names = [user?.role, ...(user?.roles ?? [])].filter(Boolean).map((r) => (typeof r === 'string' ? r : r.name))
-  return names.length === 0 || names.some((r) => ['admin', 'manager'].includes(r))
-}
+// Only company admins change the strategy; the API enforces it too.
 
 function useSave(fn, onDone) {
   const qc = useQueryClient()
@@ -161,7 +158,7 @@ function ValueCard({ v, editable, onEdit }) {
 export default function StrategyHousePage() {
   const { t } = useTranslation()
   const { n, pick } = useFormat()
-  const editable = canEdit(useAuthStore((s) => s.user))
+  const editable = isAdmin(useAuthStore((s) => s.user))
   const { data, isLoading, isError, refetch } = useQuery({ queryKey: KEY, queryFn: async () => (await api.get('/strategy-house')).data.data })
   const [editHouse, setEditHouse] = useState(false)
   const [editWeights, setEditWeights] = useState(false)

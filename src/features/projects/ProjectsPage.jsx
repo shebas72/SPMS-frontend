@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Pencil, Plus, Trash2 } from 'lucide-react'
 import api from '@/lib/api'
 import { cn } from '@/lib/utils'
-import { canEdit } from '@/lib/roles'
+import { canEdit, canEditDepartment, canManageItem, canWorkOnItem } from '@/lib/roles'
 import { fetchAll } from '@/lib/fetchAll'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/authStore'
@@ -27,10 +27,15 @@ function ProjectForm({ project, year, month, objectives, departments, onDone }) 
   const { t } = useTranslation()
   const { pick } = useFormat()
   const qc = useQueryClient()
+  const me = useAuthStore((st) => st.user)
+  const people = useQuery({ queryKey: ['users-lookup'], queryFn: async () => (await api.get('/users/lookup')).data.data })
+  // Restricted managers can only place a project in a department they manage.
+  const deptOptions = departments.filter((d) => canEditDepartment(me, d.id))
+  const anyDept = canEditDepartment(me, null)
   const s = (v) => (v == null ? '' : String(v))
   const [f, setF] = useState({
     code: s(project?.code), name: s(project?.name), name_ar: s(project?.name_ar), description: s(project?.description), description_ar: s(project?.description_ar),
-    type: project?.type ?? 'strategic', status: project?.status ?? 'not_started', department_id: s(project?.department_id), strategic_objective_ids: (project?.objectives ?? []).map((o) => o.id),
+    type: project?.type ?? 'strategic', status: project?.status ?? 'not_started', department_id: s(project?.department_id ?? (!anyDept && deptOptions.length === 1 ? deptOptions[0].id : '')), owner_id: s(project?.owner_id), strategic_objective_ids: (project?.objectives ?? []).map((o) => o.id),
     planned_start_date: s(project?.planned_start_date), planned_end_date: s(project?.planned_end_date), actual_start_date: s(project?.actual_start_date), actual_end_date: s(project?.actual_end_date),
     is_on_timeline: project?.is_on_timeline ?? true, year: project?.year ?? year,
   })
@@ -61,7 +66,8 @@ function ProjectForm({ project, year, month, objectives, departments, onDone }) 
         <L label={t('projects.type')}><select className={field} value={f.type} onChange={set('type')}>{TYPES.map((x) => <option key={x} value={x}>{t(`projects.types.${x}`)}</option>)}</select></L>
         <L label={t('projects.status')}><select className={field} value={f.status} onChange={set('status')}>{STATUSES.map((x) => <option key={x} value={x}>{t(`projects.statuses.${x}`)}</option>)}</select></L>
         <label className="flex items-center gap-2 self-end pb-2 text-sm"><input type="checkbox" checked={f.is_on_timeline} onChange={(e) => setF((x) => ({ ...x, is_on_timeline: e.target.checked }))} />{t('projects.onTimeline')}</label>
-        <L label={t('projects.department')}><select className={field} value={f.department_id} onChange={set('department_id')}><option value="">—</option>{departments.map((d) => <option key={d.id} value={d.id}>{pick(d)}</option>)}</select></L>
+        <L label={t('projects.department')}><select required={!anyDept} className={field} value={f.department_id} onChange={set('department_id')}>{anyDept && <option value="">—</option>}{deptOptions.map((d) => <option key={d.id} value={d.id}>{pick(d)}</option>)}</select></L>
+        <L label={t('projects.owner')}><select className={field} value={f.owner_id} onChange={set('owner_id')}><option value="">{project ? '—' : t('projects.ownerMe')}</option>{(people.data ?? []).map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}</select></L>
         <fieldset className="md:col-span-2">
           <legend className="mb-1 text-sm text-muted">{t('projects.objectives')}</legend>
           <div className="max-h-36 space-y-1 overflow-y-auto rounded-md border border-line bg-white p-2">
@@ -117,7 +123,7 @@ export default function ProjectsPage() {
   const { n, pick, month: monthShort } = useFormat()
   const qc = useQueryClient()
   const user = useAuthStore((s) => s.user)
-  const manager = canEdit(user)
+  const manager = canEdit(user) // may add projects (the form limits the department to the ones they manage)
   const [period, setPeriod] = useState({})
   const [view, setView] = useState('month')
   const [selected, setSelected] = useState(null)
@@ -153,7 +159,8 @@ export default function ProjectsPage() {
   const { overall, trend, projects } = perf.data
   const row = projects.find((r) => r.id === selected)
   const full = list.data.find((r) => r.id === selected)
-  const canReport = full && (manager || full.owner_id === user?.id)
+  const canReport = full && canWorkOnItem(user, full)
+  const canChange = full && canManageItem(user, full)
   const linked = (initiatives.data ?? []).filter((i) => i.projects.some((x) => x.id === selected))
   const suggested = linked.length ? { count: linked.length, pct: Math.round((linked.reduce((sum, i) => sum + i.completion_pct, 0) / linked.length) * 100) / 100 } : null
   const toggle = (v) => 'rounded-md border px-3 py-1.5 text-sm ' + (view === v ? 'border-ink bg-ink text-white' : 'border-line bg-white hover:bg-brand-soft')
@@ -216,7 +223,7 @@ export default function ProjectsPage() {
                 {t('projects.planned')}: {full.planned_start_date ?? '—'} → {full.planned_end_date ?? '—'} · {t('projects.actual')}: {full.actual_start_date ?? '—'} → {full.actual_end_date ?? '—'}
               </p>
             </div>
-            {manager && (
+            {canChange && (
               <div className="flex gap-1">
                 <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t('projects.edit')} onClick={() => setForm(full)}><Pencil className="h-4 w-4" /></Button>
                 <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t('projects.delete')} disabled={del.isPending}

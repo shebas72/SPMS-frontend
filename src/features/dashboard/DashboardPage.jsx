@@ -134,6 +134,13 @@ export default function DashboardPage() {
         <h1 className="text-2xl font-semibold">{t('nav.dashboard')}</h1>
         <PeriodPicker period={data.period} onChange={setPeriod} />
       </div>
+      {data.scope?.restricted && (
+        <p className="rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-muted">
+          {data.scope.departments.length
+            ? t('dashboard.scopeNote', { departments: data.scope.departments.map((d) => pick(d)).join(', ') })
+            : t('dashboard.scopeNone')}
+        </p>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         <Card title={t('dashboard.overall')} className="space-y-6">

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ChevronDown, ChevronRight, Pencil, Plus, Trash2 } from 'lucide-react'
 import api from '@/lib/api'
 import { cn } from '@/lib/utils'
-import { canEdit } from '@/lib/roles'
+import { canEdit, canEditDepartment } from '@/lib/roles'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/authStore'
 import { PeriodPicker } from '@/features/dashboard/DashboardPage'
@@ -111,7 +111,8 @@ export default function DepartmentsPage() {
   const { t } = useTranslation()
   const { pick } = useFormat()
   const qc = useQueryClient()
-  const editable = canEdit(useAuthStore((s) => s.user))
+  const user = useAuthStore((s) => s.user)
+  const editable = canEdit(user)
   const [period, setPeriod] = useState({})
   const [collapsed, setCollapsed] = useState(() => new Set())
   const [form, setForm] = useState(null) // null = closed, { dept } to edit, { parentId } to add
@@ -158,13 +159,13 @@ export default function DepartmentsPage() {
       <div key={d.id}>
         <Row
           d={d} depth={depth} hasKids={kids.length > 0} open={open} onToggle={() => toggle(d.id)} error={rowError[d.id]}
-          actions={editable && (
+          actions={editable && (!canEditDepartment(user, d.id) ? <span className="w-[6.25rem]" /> : (
             <div className="flex items-start gap-0.5">
               <Button variant="ghost" size="icon" className={btn} aria-label={t('departmentsPage.addChild')} onClick={() => setForm({ parentId: d.id })}><Plus className="h-4 w-4" /></Button>
               <Button variant="ghost" size="icon" className={btn} aria-label={t('departmentsPage.edit')} onClick={() => setForm({ dept: d })}><Pencil className="h-4 w-4" /></Button>
               <Button variant="ghost" size="icon" className={btn} aria-label={t('departmentsPage.delete')} disabled={del.isPending} onClick={() => remove(d)}><Trash2 className="h-4 w-4" /></Button>
             </div>
-          )}
+          ))}
         />
         {kids.length > 0 && open && <ul className="divide-y divide-line border-t border-line">{kids.map((c) => render(c, depth + 1))}</ul>}
       </div>
@@ -180,7 +181,7 @@ export default function DepartmentsPage() {
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <PeriodPicker period={q.data.meta} onChange={setPeriod} />
-          {editable && form === null && <Button size="sm" onClick={() => setForm({})}><Plus className="h-4 w-4" aria-hidden="true" />{t('departmentsPage.add')}</Button>}
+          {editable && canEditDepartment(user, null) && form === null && <Button size="sm" onClick={() => setForm({})}><Plus className="h-4 w-4" aria-hidden="true" />{t('departmentsPage.add')}</Button>}
         </div>
       </div>
 

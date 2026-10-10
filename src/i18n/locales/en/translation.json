@@ -15,7 +15,8 @@
     "initiatives": "Initiatives",
     "executionPlan": "Execution plan",
     "users": "Team",
-    "settings": "Settings"
+    "settings": "Settings",
+    "teamPerformance": "Team performance"
   },
   "auth": {
     "loginTitle": "Sign in to your workspace",
@@ -66,7 +67,9 @@
       "at_risk": "At risk",
       "behind": "Behind",
       "none": "No data"
-    }
+    },
+    "scopeNote": "Scores on this page cover your departments only: {{departments}}.",
+    "scopeNone": "No departments are assigned to you yet, so there are no scores to show. Ask your admin."
   },
   "strategyMap": {
     "hint": "Select an objective to see the KPIs behind its score.",
@@ -222,7 +225,8 @@
     "cancel": "Cancel",
     "close": "Close",
     "partial": "The KPI was saved, but {{count}} monthly targets could not be saved. Open the KPI again and re-enter them.",
-    "saveError": "Couldn't save the KPI. Try again."
+    "saveError": "Couldn't save the KPI. Try again.",
+    "owner": "Owner"
   },
   "kpiCard": {
     "back": "← All KPIs",
@@ -463,7 +467,9 @@
     "initialPct": "Starting completion (%), optional",
     "noProgress": "No progress reported yet. Completion is reported monthly, or calculated automatically once the project has initiatives.",
     "initiatives": "Linked initiatives",
-    "suggested": "Calculated from {{count}} linked initiative(s): {{value}}%. This value is pre-filled; change it to override."
+    "suggested": "Calculated from {{count}} linked initiative(s): {{value}}%. This value is pre-filled; change it to override.",
+    "owner": "Owner",
+    "ownerMe": "Me (default)"
   },
   "initiatives": {
     "add": "Add initiative",
@@ -525,12 +531,14 @@
     "roles": {
       "admin": "Admin",
       "manager": "Manager",
-      "viewer": "Viewer"
+      "viewer": "Viewer",
+      "employee": "Employee"
     },
     "roleHints": {
-      "admin": "full access, manages the team and settings",
-      "manager": "adds and edits data, reviews proposals",
-      "viewer": "read-only"
+      "admin": "full access, manages the team, settings and the strategy",
+      "manager": "manages projects, initiatives, KPIs and proposals in their own departments",
+      "viewer": "read-only",
+      "employee": "enters KPI data for their own departments"
     },
     "sentEmailed": "Invitation emailed to {{email}}. You can also share this link:",
     "sentLinkOnly": "The email couldn't be sent. Share this link with {{email}}:",
@@ -549,7 +557,8 @@
       "name": "Name",
       "email": "Email",
       "role": "Role",
-      "status": "Status"
+      "status": "Status",
+      "access": "Departments"
     },
     "active": "Active",
     "inactive": "Deactivated",
@@ -573,7 +582,27 @@
     "selfHint": "Change your own password from your profile.",
     "save": "Save",
     "saving": "Saving…",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "access": {
+      "adminAll": "Admins always see and manage every department.",
+      "manager": "Reports to",
+      "scope": "Can see",
+      "scopes": {
+        "own": "Own departments only",
+        "all": "All departments",
+        "selected": "A chosen list"
+      },
+      "own": "Own departments (with their sub-departments)",
+      "chosen": "Departments they can see",
+      "hint": {
+        "own": "Sees only their own departments.",
+        "all": "Sees every department.",
+        "selected": "Sees only the departments in the chosen list."
+      },
+      "editHint": "Data can only be changed in their own departments; with none ticked, they can change whatever they can see.",
+      "allDepartments": "All departments",
+      "none": "None assigned"
+    }
   },
   "invite": {
     "title": "Join {{company}}",
@@ -604,7 +633,11 @@
     "saving": "Saving…",
     "saved": "Saved.",
     "saveError": "Couldn't save the settings. Try again.",
-    "error": "Couldn't load the settings. Check your connection and try again."
+    "error": "Couldn't load the settings. Check your connection and try again.",
+    "teamReportVisibility": "Team performance report for employees",
+    "visibilityColleagues": "Employees see the ranking of their colleagues",
+    "visibilityOwn": "Employees see only their own row",
+    "visibilityHint": "Admins and managers always see their teams. This choice applies to employees and viewers."
   },
   "profile": {
     "title": "My profile",
@@ -623,5 +656,63 @@
     "change": "Change password",
     "passwordChanged": "Password changed.",
     "passwordHint": "Your other sessions are signed out when you change it."
+  },
+  "teamPerf": {
+    "counts": {
+      "on_track": "On track",
+      "at_risk": "At risk",
+      "behind": "Behind",
+      "not_entered": "Not entered"
+    },
+    "scope": {
+      "company": "Everyone in the company, with the teams of each manager and the KPIs that have no owner.",
+      "team": "People in your departments and the ones who report to you.",
+      "self": "Your own KPIs, projects and initiatives. Your admin has set this report to show only your own row."
+    },
+    "basisNote": "Scores follow each person's KPIs, weighted by KPI weight, for {{month}} and year to date.",
+    "people": "People",
+    "kpis": "KPIs",
+    "score": "Score",
+    "you": "You",
+    "person": "Person",
+    "rank": "#",
+    "thisMonth": "This month",
+    "ytd": "Year to date",
+    "basis": "Show",
+    "sortBy": "Sort by",
+    "sortScore": "Score",
+    "sortMissing": "Missing entries",
+    "sortName": "Name",
+    "search": "Search by name",
+    "showEmpty": "Show people with nothing assigned ({{count}})",
+    "statusCol": "KPI status",
+    "dataCol": "Data entry",
+    "projectsCol": "Projects",
+    "initiativesCol": "Initiatives",
+    "missing": "{{count}} missing",
+    "late": "{{count}} late",
+    "unownedKpis": "KPIs without an owner: {{count}}",
+    "unassigned": "No owner",
+    "unassignedHint": "KPIs that have no owner yet. Set an owner in the KPI form.",
+    "teams": "Teams",
+    "manager": "Manager",
+    "members": "Members",
+    "kpi": "KPI",
+    "noEntryMonths": "Months with no entry",
+    "projectsTitle": "Projects",
+    "initiativesTitle": "Initiatives",
+    "offTimeline": "off timeline",
+    "workStatus": {
+      "not_started": "Not started",
+      "in_progress": "In progress",
+      "completed": "Completed",
+      "delayed": "Delayed",
+      "cancelled": "Cancelled"
+    },
+    "nothingOwned": "No KPIs, projects or initiatives are owned by this person for this year.",
+    "entriesLogged": "Entries logged by this person this year: {{count}}",
+    "empty": "Nobody matches. Try another name.",
+    "footnote": "Data entry counts the months up to the selected month that have a target but no actual value. Projects and initiatives show the average completion reported up to that month; late means off timeline or delayed.",
+    "error": "Couldn't load the report. Check your connection and try again."
   }
 }

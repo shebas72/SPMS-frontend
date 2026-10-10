@@ -6,7 +6,7 @@ import Chart from 'react-apexcharts'
 import { Check, Pencil, Plus, Trash2, X } from 'lucide-react'
 import api from '@/lib/api'
 import { cn } from '@/lib/utils'
-import { canEdit } from '@/lib/roles'
+import { canManageItem } from '@/lib/roles'
 import { fetchAll } from '@/lib/fetchAll'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/authStore'
@@ -81,7 +81,6 @@ export default function AnalysisPage() {
   const { n, pick, lang } = useFormat()
   const qc = useQueryClient()
   const user = useAuthStore((s) => s.user)
-  const manager = canEdit(user)
   const [period, setPeriod] = useState({})
   const [group, setGroup] = useState('low')
   const [dept, setDept] = useState('')
@@ -128,7 +127,9 @@ export default function AnalysisPage() {
   const total = GROUPS.reduce((s, g) => s + counts[g], 0)
   const lowPct = total ? Math.round((counts.low / total) * 1000) / 10 : 0
   const causeTotal = Object.values(causeCounts).reduce((a, b) => a + b, 0)
-  const canModify = (x) => manager || (x.submitted_by === user?.id && x.status === 'pending')
+  // Admins/managers act on the proposals of the departments they manage; the submitter can still change their own while it is pending.
+  const canReview = (x) => canManageItem(user, x)
+  const canModify = (x) => canReview(x) || (x.submitted_by === user?.id && x.status === 'pending')
   const list = (proposals.data ?? []).filter((x) => !statusFilter || x.status === statusFilter)
   const donut = { chart: { type: 'donut', fontFamily: 'inherit', animations: { enabled: false } }, legend: { position: 'bottom' }, dataLabels: { enabled: false }, stroke: { width: 1 } }
 
@@ -228,11 +229,11 @@ export default function AnalysisPage() {
                   <td className="px-4 py-3"><Pill status={x.status} /></td>
                   <td className="px-4 py-3">
                     <div className="flex flex-wrap justify-end gap-1">
-                      {manager && x.status === 'pending' && <>
+                      {canReview(x) && x.status === 'pending' && <>
                         <Button size="sm" variant="outline" disabled={review.isPending} onClick={() => review.mutate({ id: x.id, action: 'approve' })}><Check className="h-4 w-4" aria-hidden="true" />{t('analysis.approve')}</Button>
                         <Button size="sm" variant="outline" disabled={review.isPending} onClick={() => review.mutate({ id: x.id, action: 'reject' })}><X className="h-4 w-4" aria-hidden="true" />{t('analysis.reject')}</Button>
                       </>}
-                      {manager && x.status === 'in_progress' && <Button size="sm" variant="outline" disabled={review.isPending} onClick={() => review.mutate({ id: x.id, action: 'complete' })}>{t('analysis.complete')}</Button>}
+                      {canReview(x) && x.status === 'in_progress' && <Button size="sm" variant="outline" disabled={review.isPending} onClick={() => review.mutate({ id: x.id, action: 'complete' })}>{t('analysis.complete')}</Button>}
                       {canModify(x) && <>
                         <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t('analysis.edit')} onClick={() => setForm({ proposal: x })}><Pencil className="h-4 w-4" /></Button>
                         <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t('analysis.delete')} disabled={del.isPending} onClick={() => window.confirm(t('analysis.confirmDelete')) && del.mutate(x.id)}><Trash2 className="h-4 w-4" /></Button>

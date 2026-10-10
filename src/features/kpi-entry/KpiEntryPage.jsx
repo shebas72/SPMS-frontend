@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import api from '@/lib/api'
 import { cn } from '@/lib/utils'
-import { canEdit } from '@/lib/roles'
+import { canEnter, canEnterKpi } from '@/lib/roles'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/authStore'
 import { useDashboard } from '@/features/dashboard/useDashboard'
@@ -38,7 +38,8 @@ export default function KpiEntryPage() {
   const { t } = useTranslation()
   const { n, pick } = useFormat()
   const qc = useQueryClient()
-  const editable = canEdit(useAuthStore((s) => s.user))
+  const user = useAuthStore((s) => s.user)
+  const editable = canEnter(user)
   const [period, setPeriod] = useState({})
   const [drafts, setDrafts] = useState({})
   const [errors, setErrors] = useState({})
@@ -147,7 +148,7 @@ export default function KpiEntryPage() {
                     <td className="px-4 py-3">
                       <input
                         type="number" step="any" inputMode="decimal" className={cn(input, 'w-28 tabular-nums')} aria-label={`${t('kpiEntry.actual')} ${k.code}`}
-                        disabled={!editable || target == null} value={v.actual} onChange={(ev) => edit(k, { actual: ev.target.value })}
+                        disabled={!canEnterKpi(user, k) || target == null} value={v.actual} onChange={(ev) => edit(k, { actual: ev.target.value })}
                       />
                       {dirty && v.actual === '' && (
                         <select className={cn(input, 'mt-2 block')} aria-label={t('kpiEntry.reason')} value={v.reason} onChange={(ev) => edit(k, { reason: ev.target.value })}>
@@ -160,7 +161,7 @@ export default function KpiEntryPage() {
                       {e?.achievement_pct != null && <p className="mt-1 text-xs tabular-nums text-muted">{n(Number(e.achievement_pct))}%</p>}
                     </td>
                     <td className="px-4 py-3">
-                      <input className={cn(input, 'w-full min-w-40')} aria-label={`${t('kpiEntry.note')} ${k.code}`} disabled={!editable} value={v.note} onChange={(ev) => edit(k, { note: ev.target.value })} />
+                      <input className={cn(input, 'w-full min-w-40')} aria-label={`${t('kpiEntry.note')} ${k.code}`} disabled={!canEnterKpi(user, k)} value={v.note} onChange={(ev) => edit(k, { note: ev.target.value })} />
                     </td>
                   </tr>
                 )

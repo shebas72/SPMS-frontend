@@ -3,7 +3,7 @@ import { NavLink, Outlet, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import {
-  LayoutDashboard, Landmark, Network, Target, Building2, LineChart, ClipboardEdit, FolderKanban, ListChecks, Menu, LogOut, ListTodo, CalendarCheck, Settings as SettingsIcon, Users,
+  LayoutDashboard, Landmark, Network, Target, Building2, LineChart, ClipboardEdit, FolderKanban, ListChecks, Menu, LogOut, ListTodo, CalendarCheck, Settings as SettingsIcon, Users, Trophy,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/stores/authStore'
@@ -26,6 +26,7 @@ const NAV = [
   { to: '/analysis', key: 'analysis', icon: ListChecks },
   { to: '/initiatives', key: 'initiatives', icon: ListTodo },
   { to: '/execution-plan', key: 'executionPlan', icon: CalendarCheck },
+  { to: '/team-performance', key: 'teamPerformance', icon: Trophy },
   { to: '/users', key: 'users', icon: Users, admin: true },
   { to: '/settings', key: 'settings', icon: SettingsIcon, admin: true },
 ]

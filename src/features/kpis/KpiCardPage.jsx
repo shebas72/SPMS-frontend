@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import Chart from 'react-apexcharts'
 import api from '@/lib/api'
-import { canEdit } from '@/lib/roles'
+import { canEnter } from '@/lib/roles'
 import { fetchAll } from '@/lib/fetchAll'
 import { useAuthStore } from '@/stores/authStore'
 import { StatusBadge, STATUS, THRESHOLDS, useFormat } from '@/features/dashboard/ui'
@@ -115,7 +115,7 @@ export default function KpiCardPage() {
   const { id } = useParams()
   const { t } = useTranslation()
   const { n, pick, month, monthLong, rtl } = useFormat()
-  const editable = canEdit(useAuthStore((s) => s.user))
+  const editable = canEnter(useAuthStore((s) => s.user))
 
   const kpi = useQuery({ queryKey: ['kpi', id], queryFn: () => one(`/kpis/${id}`), retry: false })
   const k = kpi.data

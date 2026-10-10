@@ -17,7 +17,7 @@ function Form({ company }) {
   const { t } = useTranslation()
   const qc = useQueryClient()
   const fileRef = useRef(null)
-  const [f, setF] = useState({ name: company.name ?? '', name_ar: company.name_ar ?? '', timezone: company.timezone ?? '', default_language: company.default_language ?? '' })
+  const [f, setF] = useState({ name: company.name ?? '', name_ar: company.name_ar ?? '', timezone: company.timezone ?? '', default_language: company.default_language ?? '', team_report_visibility: company.team_report_visibility ?? 'colleagues' })
   const [saved, setSaved] = useState(false)
   const set = (k) => (e) => { setSaved(false); setF((x) => ({ ...x, [k]: e.target.value })) }
   const done = () => { qc.invalidateQueries({ queryKey: ['company'] }); qc.invalidateQueries({ queryKey: ['me'] }) } // 'me' refreshes the sidebar logo and name
@@ -65,6 +65,13 @@ function Form({ company }) {
           </L>
           <L label={t('settings.language')}>
             <select className={field} value={f.default_language} onChange={set('default_language')}><option value="">—</option><option value="en">English</option><option value="ar">العربية</option></select>
+          </L>
+          <L label={t('settings.teamReportVisibility')} className="md:col-span-2">
+            <select className={field} value={f.team_report_visibility} onChange={set('team_report_visibility')}>
+              <option value="colleagues">{t('settings.visibilityColleagues')}</option>
+              <option value="own">{t('settings.visibilityOwn')}</option>
+            </select>
+            <span className="mt-1 block text-xs text-muted">{t('settings.visibilityHint')}</span>
           </L>
         </div>
         <div className="flex flex-wrap items-center gap-3">

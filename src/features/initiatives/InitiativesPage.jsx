@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Pencil, Plus, Trash2 } from 'lucide-react'
 import api from '@/lib/api'
 import { cn } from '@/lib/utils'
-import { canEdit } from '@/lib/roles'
+import { canEdit, canEditDepartment, canManageItem, canWorkOnItem } from '@/lib/roles'
 import { fetchAll } from '@/lib/fetchAll'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/authStore'
@@ -43,11 +43,15 @@ function InitiativeForm({ initiative, year, month, objectives, departments, proj
   const { t } = useTranslation()
   const { pick } = useFormat()
   const qc = useQueryClient()
+  const me = useAuthStore((st) => st.user)
+  const people = useQuery({ queryKey: ['users-lookup'], queryFn: async () => (await api.get('/users/lookup')).data.data })
+  const deptOptions = departments.filter((d) => canEditDepartment(me, d.id))
+  const anyDept = canEditDepartment(me, null)
   const s = (v) => (v == null ? '' : String(v))
   const [initial, setInitial] = useState('')
   const [f, setF] = useState({
     code: s(initiative?.code), name: s(initiative?.name), name_ar: s(initiative?.name_ar), description: s(initiative?.description), description_ar: s(initiative?.description_ar),
-    status: initiative?.status ?? 'not_started', department_id: s(initiative?.department_id), strategic_objective_id: s(initiative?.strategic_objective_id),
+    status: initiative?.status ?? 'not_started', department_id: s(initiative?.department_id ?? (!anyDept && deptOptions.length === 1 ? deptOptions[0].id : '')), owner_id: s(initiative?.owner_id), strategic_objective_id: s(initiative?.strategic_objective_id),
     planned_start_date: s(initiative?.planned_start_date), planned_end_date: s(initiative?.planned_end_date), is_on_timeline: initiative?.is_on_timeline ?? true,
     year: initiative?.year ?? year, project_ids: (initiative?.projects ?? []).map((x) => x.id), kpi_ids: (initiative?.kpis ?? []).map((x) => x.id),
   })
@@ -73,7 +77,8 @@ function InitiativeForm({ initiative, year, month, objectives, departments, proj
         <L label={t('projects.descriptionAr')}><textarea dir="rtl" rows={2} className={cn(field, 'h-auto py-2')} value={f.description_ar} onChange={set('description_ar')} /></L>
         <L label={t('dashboard.year')}><input type="number" min="2000" max="2100" className={field} value={f.year} onChange={set('year')} /></L>
         <L label={t('projects.status')}><select className={field} value={f.status} onChange={set('status')}>{STATUSES.map((x) => <option key={x} value={x}>{t(`projects.statuses.${x}`)}</option>)}</select></L>
-        <L label={t('projects.department')}><select className={field} value={f.department_id} onChange={set('department_id')}><option value="">—</option>{departments.map((d) => <option key={d.id} value={d.id}>{pick(d)}</option>)}</select></L>
+        <L label={t('projects.department')}><select required={!anyDept} className={field} value={f.department_id} onChange={set('department_id')}>{anyDept && <option value="">—</option>}{deptOptions.map((d) => <option key={d.id} value={d.id}>{pick(d)}</option>)}</select></L>
+        <L label={t('initiatives.owner')}><select className={field} value={f.owner_id} onChange={set('owner_id')}><option value="">{initiative ? '—' : t('projects.ownerMe')}</option>{(people.data ?? []).map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}</select></L>
         <L label={t('initiatives.objective')}><select className={field} value={f.strategic_objective_id} onChange={set('strategic_objective_id')}><option value="">—</option>{objectives.map((o) => <option key={o.id} value={o.id}>{o.code} · {pick(o)}</option>)}</select></L>
         <L label={t('projects.plannedStart')}><input type="date" className={field} value={f.planned_start_date} onChange={set('planned_start_date')} /></L>
         <L label={t('projects.plannedEnd')}><input type="date" className={field} value={f.planned_end_date} onChange={set('planned_end_date')} /></L>
@@ -147,7 +152,7 @@ export default function InitiativesPage() {
   const { n, pick } = useFormat()
   const qc = useQueryClient()
   const user = useAuthStore((s) => s.user)
-  const manager = canEdit(user)
+  const manager = canEdit(user) // may add initiatives (the form limits the department to the ones they manage)
   const [period, setPeriod] = useState({})
   const [view, setView] = useState('month')
   const [selected, setSelected] = useState(null)
@@ -183,7 +188,8 @@ export default function InitiativesPage() {
   const { overall, trend, initiatives } = perf.data
   const row = initiatives.find((r) => r.id === selected)
   const full = list.data.find((r) => r.id === selected)
-  const canPlan = full && (manager || full.owner_id === user?.id)
+  const canPlan = full && canWorkOnItem(user, full)
+  const canChange = full && canManageItem(user, full)
   const toggle = (v) => 'rounded-md border px-3 py-1.5 text-sm ' + (view === v ? 'border-ink bg-ink text-white' : 'border-line bg-white hover:bg-brand-soft')
 
   return (
@@ -238,7 +244,7 @@ export default function InitiativesPage() {
         <section className="space-y-5 rounded-lg border border-ink bg-white p-5" aria-label={t('initiatives.card')}>
           <div className="flex items-start justify-between gap-3">
             <h2 className="text-lg font-semibold">{t('initiatives.card')}</h2>
-            {manager && (
+            {canChange && (
               <div className="flex gap-1">
                 <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t('projects.edit')} onClick={() => setForm(full)}><Pencil className="h-4 w-4" /></Button>
                 <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t('projects.delete')} disabled={delInit.isPending}

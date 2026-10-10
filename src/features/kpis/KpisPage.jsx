@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { ChevronLeft, ChevronRight, Pencil, Plus, Trash2 } from 'lucide-react'
 import api from '@/lib/api'
 import { cn } from '@/lib/utils'
-import { canEdit } from '@/lib/roles'
+import { canEdit, canEditKpi } from '@/lib/roles'
 import { fetchAll } from '@/lib/fetchAll'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/authStore'
@@ -21,7 +21,8 @@ export default function KpisPage() {
   const { t } = useTranslation()
   const { n, pick } = useFormat()
   const qc = useQueryClient()
-  const editable = canEdit(useAuthStore((s) => s.user))
+  const user = useAuthStore((s) => s.user)
+  const editable = canEdit(user)
   const [period, setPeriod] = useState({})
   const [form, setForm] = useState(null) // null = closed, {} = new, kpi = editing
   const [filters, setFilters] = useState({ search: '', department: '', objective: '' })
@@ -117,7 +118,7 @@ export default function KpisPage() {
                     <td className="px-4 py-3 tabular-nums">{k.annual_target == null ? '—' : `${n(Number(k.annual_target))} ${k.unit ?? ''}`}</td>
                     <td className="px-4 py-3">{s ? <><StatusBadge status={s.status} score={s.score} /><p className="mt-1 text-xs tabular-nums text-muted">{n(s.score)}</p></> : '—'}</td>
                     <td className="px-4 py-3">
-                      {editable && (
+                      {canEditKpi(user, k) && (
                         <div className="flex justify-end gap-1">
                           <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t('kpiList.edit')} onClick={() => setForm(k)}><Pencil className="h-4 w-4" /></Button>
                           <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t('kpiList.delete')} disabled={del.isPending}

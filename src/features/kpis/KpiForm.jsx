@@ -6,6 +6,8 @@ import { cn } from '@/lib/utils'
 import { fetchAll } from '@/lib/fetchAll'
 import { Button } from '@/components/ui/button'
 import { useFormat } from '@/features/dashboard/ui'
+import { useAuthStore } from '@/stores/authStore'
+import { canEditDepartment } from '@/lib/roles'
 
 const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1)
 const field = 'h-9 w-full rounded-md border border-line bg-white px-2 text-sm disabled:bg-brand-soft disabled:text-muted'
@@ -41,9 +43,12 @@ function Form({ kpi, year, existing, objectives, departments, onDone }) {
   const { t } = useTranslation()
   const { month, pick } = useFormat()
   const qc = useQueryClient()
+  const me = useAuthStore((s) => s.user)
+  const people = useQuery({ queryKey: ['users-lookup'], queryFn: async () => (await api.get('/users/lookup')).data.data })
+  const deptOptions = departments.filter((d) => canEditDepartment(me, d.id))
   const [f, setF] = useState({
     code: kpi?.code ?? '', name: kpi?.name ?? '', name_ar: str(kpi?.name_ar), unit: str(kpi?.unit),
-    strategic_objective_id: str(kpi?.strategic_objective_id), department_id: str(kpi?.department_id),
+    strategic_objective_id: str(kpi?.strategic_objective_id), department_id: str(kpi?.department_id ?? (deptOptions.length === 1 && !canEditDepartment(me, null) ? deptOptions[0].id : '')), owner_id: str(kpi?.owner_id),
     type: kpi?.type ?? 'strategic', frequency: kpi?.frequency ?? 'monthly', direction: kpi?.direction ?? 'higher_is_better',
     value_type: kpi?.value_type ?? 'number', weight: str(kpi?.weight && Number(kpi.weight)), annual_target: str(kpi?.annual_target && Number(kpi.annual_target)),
     threshold_red: str(kpi?.threshold_red && Number(kpi.threshold_red)), threshold_yellow: str(kpi?.threshold_yellow && Number(kpi.threshold_yellow)),
@@ -61,7 +66,7 @@ function Form({ kpi, year, existing, objectives, departments, onDone }) {
       const payload = {
         year: kpiYear, code: f.code, name: f.name, name_ar: f.name_ar || null, unit: f.unit || null,
         strategic_objective_id: f.strategic_objective_id || null, bsc_perspective_id: objective?.bsc_perspective_id ?? null,
-        department_id: f.department_id || null, type: f.type, frequency: f.frequency, direction: f.direction, value_type: f.value_type,
+        department_id: f.department_id || null, owner_id: f.owner_id || null, type: f.type, frequency: f.frequency, direction: f.direction, value_type: f.value_type,
         annual_target: num(f.annual_target), is_active: f.is_active,
         // Columns with DB defaults are only sent when filled in, because the API rejects null for them.
         ...Object.fromEntries(['weight', 'threshold_red', 'threshold_yellow'].filter((k) => f[k] !== '').map((k) => [k, Number(f[k])])),
@@ -97,8 +102,14 @@ function Form({ kpi, year, existing, objectives, departments, onDone }) {
         </Field>
         <Field label={t('kpiList.department')}>
           <select className={field} value={f.department_id} onChange={set('department_id')}>
+            {canEditDepartment(me, null) && <option value="">—</option>}
+            {deptOptions.map((d) => <option key={d.id} value={d.id}>{pick(d)}</option>)}
+          </select>
+        </Field>
+        <Field label={t('kpiList.owner')}>
+          <select className={field} value={f.owner_id} onChange={set('owner_id')}>
             <option value="">—</option>
-            {departments.map((d) => <option key={d.id} value={d.id}>{pick(d)}</option>)}
+            {(people.data ?? []).map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}
           </select>
         </Field>
         <Field label={t('kpiList.unit')}><input className={field} value={f.unit} onChange={set('unit')} /></Field>
