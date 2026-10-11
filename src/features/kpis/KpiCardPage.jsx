@@ -8,6 +8,7 @@ import { canEnter } from '@/lib/roles'
 import { fetchAll } from '@/lib/fetchAll'
 import { useAuthStore } from '@/stores/authStore'
 import { StatusBadge, STATUS, THRESHOLDS, useFormat } from '@/features/dashboard/ui'
+import PdfButton from '@/components/PdfButton'
 
 const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1)
 const SCORE_CAP = 120 // keep in sync with config('spms.score_cap')
@@ -204,7 +205,10 @@ export default function KpiCardPage() {
             {[k.code, k.year, objective.data && pick(objective.data), department.data && pick(department.data), t(`kpiList.directions.${k.direction}`), t(`kpiList.frequencys.${k.frequency}`)].filter(Boolean).join(' · ')}
           </p>
         </div>
-        {editable && <Link to="/kpi-entry" className={linkBtn}>{t('kpiCard.enterData')}</Link>}
+        <div className="flex flex-wrap items-center gap-3">
+          <PdfButton path={`/reports/pdf/kpis/${id}`} params={{ month: d?.latest || undefined }} />
+          {editable && <Link to="/kpi-entry" className={linkBtn}>{t('kpiCard.enterData')}</Link>}
+        </div>
       </div>
 
       {d.count === 0 ? (

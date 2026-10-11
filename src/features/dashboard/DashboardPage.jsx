@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useDashboard } from './useDashboard'
 import { Counts, ScoreBar, StatusBadge, THRESHOLDS, STATUS, keyOf, statusOf, useFormat } from './ui'
+import PdfButton from '@/components/PdfButton'
 
 const Card = ({ title, className, children }) => (
   <section className={cn('rounded-lg border border-line bg-white p-5', className)}>
@@ -132,7 +133,10 @@ export default function DashboardPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold">{t('nav.dashboard')}</h1>
-        <PeriodPicker period={data.period} onChange={setPeriod} />
+        <div className="flex flex-wrap items-center gap-3">
+          <PeriodPicker period={data.period} onChange={setPeriod} />
+          <PdfButton path="/reports/pdf/dashboard" params={{ year: data.period.year, month: data.period.month }} />
+        </div>
       </div>
       {data.scope?.restricted && (
         <p className="rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-muted">

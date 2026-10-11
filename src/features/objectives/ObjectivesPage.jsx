@@ -7,15 +7,19 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useDashboard } from '@/features/dashboard/useDashboard'
 import { PeriodPicker } from '@/features/dashboard/DashboardPage'
+import ObjectivesTrend from './ObjectivesTrend'
+import { ViewSwitch } from '@/features/performance/trendCharts'
 import { Counts, ScoreBar, StatusBadge, keyOf, statusOf, useFormat } from '@/features/dashboard/ui'
+import PdfButton from '@/components/PdfButton'
 
 // GET /dashboard/objectives supports ?perspective_id=, so filtering happens on the server.
-function useObjectives({ year, month }, perspectiveId) {
+// With series=1 the response also carries each objective's monthly series and the company overall (trend view).
+function useObjectives({ year, month }, perspectiveId, withSeries) {
   return useQuery({
-    queryKey: ['objectives-page', year ?? null, month ?? null, perspectiveId],
+    queryKey: ['objectives-page', year ?? null, month ?? null, perspectiveId, withSeries],
     queryFn: async () => {
-      const params = { year, month, perspective_id: perspectiveId || undefined }
-      return (await api.get('/dashboard/objectives', { params })).data.data
+      const params = { year, month, perspective_id: perspectiveId || undefined, series: withSeries ? 1 : undefined }
+      return (await api.get('/dashboard/objectives', { params })).data
     },
     placeholderData: (prev) => prev,
   })
@@ -79,8 +83,9 @@ export default function ObjectivesPage() {
   const [period, setPeriod] = useState({})
   const [perspectiveId, setPerspectiveId] = useState('')
   const [sort, setSort] = useState('order')
+  const [view, setView] = useState('trend')
   const dash = useDashboard(period)
-  const objectives = useObjectives(period, perspectiveId)
+  const objectives = useObjectives(period, perspectiveId, view === 'trend')
   const year = dash.data?.period.year
   const projects = useQuery({ queryKey: ['obj-projects', year], queryFn: () => fetchAll('/projects', { year }), enabled: Boolean(year) })
   const initiatives = useQuery({ queryKey: ['obj-initiatives', year], queryFn: () => fetchAll('/initiatives', { year }), enabled: Boolean(year) })
@@ -99,7 +104,7 @@ export default function ObjectivesPage() {
     )
   }
 
-  const rows = [...(objectives.data ?? [])]
+  const rows = [...(objectives.data?.data ?? [])]
   if (sort === 'worst') rows.sort((a, b) => (a.current?.score ?? Infinity) - (b.current?.score ?? Infinity))
   const monthLabel = monthLong(dash.data.period.month)
   const chips = [{ id: '', label: t('objectives.all') }, ...dash.data.perspectives.map((p) => ({ id: String(p.id), label: pick(p), color: p.color }))]
@@ -108,7 +113,16 @@ export default function ObjectivesPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold">{t('nav.objectives')}</h1>
-        <PeriodPicker period={dash.data.period} onChange={setPeriod} />
+        <div className="flex flex-wrap items-center gap-3">
+          <ViewSwitch
+            label={t('objectives.view')}
+            value={view}
+            onChange={setView}
+            options={[{ value: 'trend', label: t('objectives.viewTrend') }, { value: 'cards', label: t('objectives.viewCards') }]}
+          />
+          <PeriodPicker period={dash.data.period} onChange={setPeriod} />
+          <PdfButton path="/reports/pdf/objectives" params={{ year: dash.data.period.year, month: dash.data.period.month }} />
+        </div>
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -140,6 +154,8 @@ export default function ObjectivesPage() {
 
       {rows.length === 0 ? (
         <p className="rounded-lg border border-dashed border-line p-6 text-sm text-muted">{t('objectives.empty')}</p>
+      ) : view === 'trend' ? (
+        <ObjectivesTrend rows={rows} overall={objectives.data?.overall} period={dash.data.period} />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
           {rows.map((o) => <ObjectiveCard key={o.id} o={o} monthLabel={monthLabel} links={linksOf(o.id)} />)}

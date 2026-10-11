@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 import { isAdmin } from '@/lib/admin'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/authStore'
+import { useFormat } from '@/features/dashboard/ui'
 
 const field = 'h-9 w-full rounded-md border border-line bg-white px-2 text-sm'
 const L = ({ label, children, className }) => (
@@ -68,9 +69,10 @@ function PlanCard() {
 function Form({ company }) {
   const { t } = useTranslation()
   const arabicAllowed = useAuthStore((st) => st.user?.company?.features?.arabic) !== false
+  const { monthLong } = useFormat()
   const qc = useQueryClient()
   const fileRef = useRef(null)
-  const [f, setF] = useState({ name: company.name ?? '', name_ar: company.name_ar ?? '', timezone: company.timezone ?? '', default_language: company.default_language ?? '', team_report_visibility: company.team_report_visibility ?? 'colleagues' })
+  const [f, setF] = useState({ name: company.name ?? '', name_ar: company.name_ar ?? '', timezone: company.timezone ?? '', default_language: company.default_language ?? '', team_report_visibility: company.team_report_visibility ?? 'colleagues', fiscal_year_start: company.fiscal_year_start ?? '01-01' })
   const [saved, setSaved] = useState(false)
   const set = (k) => (e) => { setSaved(false); setF((x) => ({ ...x, [k]: e.target.value })) }
   const done = () => { qc.invalidateQueries({ queryKey: ['company'] }); qc.invalidateQueries({ queryKey: ['me'] }) } // 'me' refreshes the sidebar logo and name
@@ -118,6 +120,12 @@ function Form({ company }) {
           </L>
           <L label={t('settings.language')}>
             <select className={field} value={f.default_language} onChange={set('default_language')}><option value="">—</option><option value="en">English</option>{arabicAllowed && <option value="ar">العربية</option>}</select>
+          </L>
+          <L label={t('settings.fiscalYearStart')}>
+            <select className={field} value={f.fiscal_year_start} onChange={set('fiscal_year_start')}>
+              {Array.from({ length: 12 }, (_, i) => <option key={i} value={`${String(i + 1).padStart(2, '0')}-01`}>{monthLong(i + 1)}</option>)}
+            </select>
+            <span className="mt-1 block text-xs text-muted">{t('settings.fiscalYearHint')}</span>
           </L>
           <L label={t('settings.teamReportVisibility')} className="md:col-span-2">
             <select className={field} value={f.team_report_visibility} onChange={set('team_report_visibility')}>

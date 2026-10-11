@@ -88,7 +88,10 @@
     "empty": "No objectives match this filter.",
     "error": "Couldn't load the objectives. Check your connection and try again.",
     "linked": "{{projects}} projects · {{initiatives}} initiatives · average project completion {{avg}}%",
-    "linkedNone": "No linked projects or initiatives yet"
+    "linkedNone": "No linked projects or initiatives yet",
+    "view": "View",
+    "viewTrend": "Trends",
+    "viewCards": "Scorecards"
   },
   "strategyHouse": {
     "missionTitle": "Mission",
@@ -344,7 +347,19 @@
     "confirmDelete": "Delete \"{{name}}\"?",
     "confirmDeleteUsed": "\"{{name}}\" has sub-departments or KPIs. The server may refuse to delete it until they are moved. Try anyway?",
     "deleteError": "This department can't be deleted.",
-    "saveError": "Couldn't save the department. Try again."
+    "saveError": "Couldn't save the department. Try again.",
+    "view": "View",
+    "viewOverview": "Overview",
+    "viewTree": "Departments",
+    "overview": {
+      "basis": "Show",
+      "sort": "Sort",
+      "sortHigh": "Highest first",
+      "sortLow": "Lowest first",
+      "sortOrder": "Department order",
+      "subs": "Include sub-departments",
+      "trend": "Monthly trend"
+    }
   },
   "analysis": {
     "groups": "KPI groups",
@@ -621,6 +636,8 @@
     "error": "Couldn't create your account. Try again."
   },
   "settings": {
+    "fiscalYearStart": "Month the fiscal year starts",
+    "fiscalYearHint": "Saved with the company profile. KPI months are still numbered 1 to 12 inside each KPI year.",
     "adminOnly": "Only company admins can change the settings.",
     "profile": "Company profile",
     "name": "Company name (English)",
@@ -734,5 +751,23 @@
     "tasksCol": "Tasks",
     "tasksTitle": "Assigned tasks",
     "overdue": "{{count}} overdue"
+  },
+  "perfView": {
+    "overall": "Overall",
+    "ytdLine": "{{year}} year-to-date performance",
+    "monthPie": "Month performance"
+  },
+  "pdf": {
+    "export": "Export PDF",
+    "preparing": "Preparing…",
+    "error": "Could not create the PDF. Try again."
+  },
+  "kpiDeletions": {
+    "button": "Deleted KPIs",
+    "title": "Deleted KPIs",
+    "empty": "No KPI has been deleted.",
+    "error": "Couldn't load the deleted KPIs.",
+    "removed": "{{entries}} entries, {{targets}} targets",
+    "col": { "code": "Code", "name": "KPI", "year": "Year", "department": "Department", "data": "Removed with it", "by": "Deleted by", "when": "Date" }
   }
 }

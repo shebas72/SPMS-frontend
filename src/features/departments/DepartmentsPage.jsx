@@ -8,7 +8,10 @@ import { canEdit, canEditDepartment } from '@/lib/roles'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/authStore'
 import { PeriodPicker } from '@/features/dashboard/DashboardPage'
+import DepartmentOverview from './DepartmentOverview'
+import { ViewSwitch } from '@/features/performance/trendCharts'
 import { Counts, ScoreBar, StatusBadge, keyOf, statusOf, useFormat } from '@/features/dashboard/ui'
+import PdfButton from '@/components/PdfButton'
 
 const GRID = 'md:grid-cols-[minmax(0,2.2fr)_minmax(0,2fr)_minmax(0,1fr)_minmax(0,2fr)_auto]'
 const field = 'h-9 w-full rounded-md border border-line bg-white px-2 text-sm'
@@ -117,9 +120,10 @@ export default function DepartmentsPage() {
   const [collapsed, setCollapsed] = useState(() => new Set())
   const [form, setForm] = useState(null) // null = closed, { dept } to edit, { parentId } to add
   const [rowError, setRowError] = useState({})
+  const [view, setView] = useState('overview')
   const q = useQuery({
-    queryKey: ['dept-performance', period.year ?? null, period.month ?? null],
-    queryFn: async () => (await api.get('/dashboard/departments', { params: period })).data,
+    queryKey: ['dept-performance', period.year ?? null, period.month ?? null, view],
+    queryFn: async () => (await api.get('/dashboard/departments', { params: { ...period, series: view === 'overview' ? 1 : undefined } })).data,
     placeholderData: (prev) => prev,
   })
   const del = useMutation({
@@ -180,15 +184,24 @@ export default function DepartmentsPage() {
           <p className="mt-1 text-sm text-muted">{t('departmentsPage.hint')}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
+          <ViewSwitch
+            label={t('departmentsPage.view')}
+            value={view}
+            onChange={setView}
+            options={[{ value: 'overview', label: t('departmentsPage.viewOverview') }, { value: 'tree', label: t('departmentsPage.viewTree') }]}
+          />
           <PeriodPicker period={q.data.meta} onChange={setPeriod} />
-          {editable && canEditDepartment(user, null) && form === null && <Button size="sm" onClick={() => setForm({})}><Plus className="h-4 w-4" aria-hidden="true" />{t('departmentsPage.add')}</Button>}
+          <PdfButton path="/reports/pdf/departments" params={{ year: q.data.meta.year, month: q.data.meta.month }} />
+          {view === 'tree' && editable && canEditDepartment(user, null) && form === null && <Button size="sm" onClick={() => setForm({})}><Plus className="h-4 w-4" aria-hidden="true" />{t('departmentsPage.add')}</Button>}
         </div>
       </div>
 
-      {form !== null && <DeptForm key={form.dept?.id ?? `new-${form.parentId ?? 0}`} dept={form.dept} parentId={form.parentId} rows={rows} byParent={byParent} onDone={() => setForm(null)} />}
+      {view === 'tree' && form !== null && <DeptForm key={form.dept?.id ?? `new-${form.parentId ?? 0}`} dept={form.dept} parentId={form.parentId} rows={rows} byParent={byParent} onDone={() => setForm(null)} />}
 
       {rows.length === 0 ? (
         <p className="rounded-lg border border-dashed border-line p-6 text-sm text-muted">{t('departmentsPage.empty')}</p>
+      ) : view === 'overview' ? (
+        <DepartmentOverview rows={rows} period={q.data.meta} />
       ) : (
         <div className="overflow-hidden rounded-lg border border-line bg-white">
           <div className={cn('hidden gap-x-4 border-b border-line px-4 py-2.5 text-xs text-muted md:grid', GRID)}>

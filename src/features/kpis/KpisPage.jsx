@@ -13,6 +13,7 @@ import { useDashboard } from '@/features/dashboard/useDashboard'
 import { PeriodPicker } from '@/features/dashboard/DashboardPage'
 import { StatusBadge, useFormat } from '@/features/dashboard/ui'
 import KpiForm from './KpiForm'
+import DeletedKpis from './DeletedKpis'
 
 const sel = 'h-9 rounded-md border border-line bg-white px-2 text-sm'
 const PAGE_SIZE = 10
@@ -28,6 +29,7 @@ export default function KpisPage() {
   const [filters, setFilters] = useState({ search: '', department: '', objective: '' })
   const [page, setPage] = useState(1)
   const [rowError, setRowError] = useState({})
+  const [showDeleted, setShowDeleted] = useState(false)
   const dash = useDashboard(period)
   const p = dash.data?.period
   const on = Boolean(p)
@@ -79,9 +81,12 @@ export default function KpisPage() {
         <h1 className="text-2xl font-semibold">{t('nav.kpis')}</h1>
         <div className="flex flex-wrap items-center gap-3">
           <PeriodPicker period={p} onChange={(value) => { setPage(1); setPeriod(value) }} />
+          {editable && <Button size="sm" variant="outline" onClick={() => setShowDeleted((v) => !v)}>{t('kpiDeletions.button')}</Button>}
           {editable && form === null && <Button size="sm" onClick={() => setForm({})}><Plus className="h-4 w-4" aria-hidden="true" />{t('kpiList.add')}</Button>}
         </div>
       </div>
+
+      {showDeleted && editable && <DeletedKpis />}
 
       {form !== null && (
         <KpiForm key={form.id ?? 'new'} kpi={form.id ? form : null} year={p.year} objectives={objectives.data} departments={departments.data} onDone={() => setForm(null)} />

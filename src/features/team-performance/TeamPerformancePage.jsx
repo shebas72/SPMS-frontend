@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { PeriodPicker } from '@/features/dashboard/DashboardPage'
 import { ScoreBar, StatusBadge, STATUS, keyOf, statusOf, useFormat } from '@/features/dashboard/ui'
+import PdfButton from '@/components/PdfButton'
 
 const field = 'h-9 rounded-md border border-line bg-white px-2 text-sm'
 
@@ -330,7 +331,10 @@ export default function TeamPerformancePage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold">{t('nav.teamPerformance')}</h1>
-        <PeriodPicker period={q.data.period} onChange={setPeriod} />
+        <div className="flex flex-wrap items-center gap-3">
+          <PeriodPicker period={q.data.period} onChange={setPeriod} />
+          <PdfButton path="/reports/pdf/team-performance" params={{ year: q.data.period.year, month: q.data.period.month }} />
+        </div>
       </div>
       <p className="rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-muted">
         {t(`teamPerf.scope.${meta.scope}`)} {t('teamPerf.basisNote', { month: monthLong(q.data.period.month) })}
