@@ -96,26 +96,50 @@ function InitiativeForm({ initiative, year, month, objectives, departments, proj
   )
 }
 
-function TaskForm({ initiative, task, onDone }) {
+function TaskForm({ initiative, task, limited, onDone }) {
   const { t } = useTranslation()
+  const { pick } = useFormat()
   const qc = useQueryClient()
-  const [f, setF] = useState({ task_name: task?.task_name ?? '', task_name_ar: task?.task_name_ar ?? '', due_date: task?.due_date ?? '', completion_pct: task?.completion_pct ?? 0 })
+  const people = useQuery({ queryKey: ['users-lookup'], queryFn: async () => (await api.get('/users/lookup')).data.data, enabled: !limited })
+  const [f, setF] = useState({
+    task_name: task?.task_name ?? '', task_name_ar: task?.task_name_ar ?? '', due_date: task?.due_date ?? '',
+    completion_pct: task?.completion_pct ?? 0, assigned_to: task?.assigned_to ? String(task.assigned_to) : '',
+  })
   const set = (k) => (e) => setF((x) => ({ ...x, [k]: e.target.value }))
   const save = useMutation({
     mutationFn: () => {
-      const body = { ...f, task_name_ar: f.task_name_ar || null, due_date: f.due_date || null, completion_pct: Number(f.completion_pct) }
+      // the assignee may only report completion; the API ignores anything else
+      const body = limited
+        ? { completion_pct: Number(f.completion_pct) }
+        : { ...f, task_name_ar: f.task_name_ar || null, due_date: f.due_date || null, completion_pct: Number(f.completion_pct), assigned_to: f.assigned_to ? Number(f.assigned_to) : null }
       return task ? api.put(`/execution-plan-tasks/${task.id}`, body) : api.post(`/initiatives/${initiative.id}/tasks`, body)
     },
     onSuccess: () => { qc.invalidateQueries(); onDone() },
   })
+  // keep a person who was deactivated after being assigned visible in the list
+  const options = [...(people.data ?? [])]
+  if (task?.assignee && !options.some((u) => u.id === task.assignee.id)) options.push(task.assignee)
   return (
     <form className="flex flex-wrap items-end gap-3 rounded-md border border-line p-3" onSubmit={(e) => { e.preventDefault(); save.mutate() }}>
-      <L label={t('initiatives.taskName')} className="min-w-48 flex-1"><input required className={field} value={f.task_name} onChange={set('task_name')} /></L>
-      <L label={t('initiatives.taskNameAr')} className="min-w-48 flex-1"><input dir="rtl" className={field} value={f.task_name_ar} onChange={set('task_name_ar')} /></L>
-      <L label={t('initiatives.dueDate')}><input type="date" className={field} value={f.due_date} onChange={set('due_date')} /></L>
+      {limited ? (
+        <p className="min-w-48 flex-1 text-sm font-medium">{pick(task, 'task_name')}</p>
+      ) : (
+        <>
+          <L label={t('initiatives.taskName')} className="min-w-48 flex-1"><input required className={field} value={f.task_name} onChange={set('task_name')} /></L>
+          <L label={t('initiatives.taskNameAr')} className="min-w-48 flex-1"><input dir="rtl" className={field} value={f.task_name_ar} onChange={set('task_name_ar')} /></L>
+          <L label={t('initiatives.assignee')} className="min-w-40">
+            <select className={field} value={f.assigned_to} onChange={set('assigned_to')}>
+              <option value="">{t('initiatives.unassigned')}</option>
+              {options.map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}
+            </select>
+          </L>
+          <L label={t('initiatives.dueDate')}><input type="date" className={field} value={f.due_date} onChange={set('due_date')} /></L>
+        </>
+      )}
       <L label={t('projects.completion')}><input required type="number" min="0" max="100" step="any" className={cn(field, 'w-24 tabular-nums')} value={f.completion_pct} onChange={set('completion_pct')} /></L>
       <Button type="submit" size="sm" disabled={save.isPending}>{save.isPending ? t('projects.saving') : t('projects.save')}</Button>
       <Button type="button" variant="outline" size="sm" onClick={onDone}>{t('projects.cancel')}</Button>
+      {limited && <p className="w-full text-xs text-muted">{t('initiatives.assigneeHint')}</p>}
       {save.isError && <span role="alert" className="w-full text-sm text-[#A32B1E]">{save.error?.response?.data?.message || t('projects.saveError')}</span>}
     </form>
   )
@@ -294,20 +318,23 @@ export default function InitiativesPage() {
               {canPlan && taskForm === null && <Button variant="outline" size="sm" onClick={() => setTaskForm({})}><Plus className="h-4 w-4" aria-hidden="true" />{t('initiatives.addTask')}</Button>}
             </div>
             <p className="text-xs text-muted">{t('initiatives.rollupHint')}</p>
-            {taskForm !== null && <TaskForm key={taskForm.id ?? 'new'} initiative={full} task={taskForm.id ? taskForm : null} onDone={() => setTaskForm(null)} />}
+            {taskForm !== null && <TaskForm key={taskForm.id ?? 'new'} initiative={full} task={taskForm.id ? taskForm : null} limited={Boolean(taskForm.id) && !canPlan} onDone={() => setTaskForm(null)} />}
             {full.tasks.length === 0 ? <p className="text-sm text-muted">{t('initiatives.noTasks')}</p> : (
               <ul className="divide-y divide-line rounded-md border border-line">
                 {full.tasks.map((x) => (
                   <li key={x.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 px-3 py-2.5 text-sm">
-                    <span className="min-w-48 flex-1 font-medium">{pick(x, 'task_name')}</span>
+                    <span className="min-w-48 flex-1">
+                      <span className="block font-medium">{pick(x, 'task_name')}</span>
+                      <span className="block text-xs text-muted">{x.assignee ? t('initiatives.assignedTo', { name: x.assignee.name }) : t('initiatives.unassigned')}</span>
+                    </span>
                     <span className="text-xs text-muted tabular-nums">{x.due_date ?? '—'}</span>
                     <span className="w-14 text-end tabular-nums">{n(x.completion_pct)}%</span>
                     <span className="w-24 text-xs font-medium" style={{ color: TASK_COLOR[x.status] }}>{t(`initiatives.taskStatus.${x.status}`)}</span>
-                    {canPlan && (
+                    {x.can_update && (
                       <span className="flex gap-1">
                         <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t('projects.edit')} onClick={() => setTaskForm(x)}><Pencil className="h-4 w-4" /></Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t('projects.delete')} disabled={delTask.isPending}
-                          onClick={() => window.confirm(t('initiatives.confirmDeleteTask')) && (setErr(''), delTask.mutate(x.id))}><Trash2 className="h-4 w-4" /></Button>
+                        {canPlan && <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t('projects.delete')} disabled={delTask.isPending}
+                          onClick={() => window.confirm(t('initiatives.confirmDeleteTask')) && (setErr(''), delTask.mutate(x.id))}><Trash2 className="h-4 w-4" /></Button>}
                       </span>
                     )}
                   </li>

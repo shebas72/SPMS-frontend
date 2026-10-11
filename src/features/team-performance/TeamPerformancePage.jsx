@@ -74,6 +74,19 @@ function WorkCell({ w }) {
   )
 }
 
+function TaskCell({ w }) {
+  const { t } = useTranslation()
+  const { n } = useFormat()
+  if (!w.count) return <span className="text-muted">—</span>
+  return (
+    <div className="text-xs">
+      <span className="font-medium tabular-nums text-ink">{n(w.count)}</span>
+      <span className="text-muted"> · {n(w.avg_pct)}%</span>
+      {w.overdue > 0 && <p style={{ color: STATUS.behind.text }}>{t('teamPerf.overdue', { count: w.overdue })}</p>}
+    </div>
+  )
+}
+
 function DataCell({ d }) {
   const { t } = useTranslation()
   const { n } = useFormat()
@@ -104,6 +117,32 @@ function WorkList({ title, rows }) {
               {t(`teamPerf.workStatus.${i.status}`, { defaultValue: i.status })}
               {!i.is_on_timeline && i.status !== 'completed' && ` · ${t('teamPerf.offTimeline')}`}
               {' · '}<span className="font-medium tabular-nums text-ink">{i.pct == null ? '—' : `${n(i.pct)}%`}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+function TaskList({ rows }) {
+  const { t } = useTranslation()
+  const { n, pick } = useFormat()
+  if (!rows.items.length) return null
+  return (
+    <div>
+      <h4 className="mb-2 text-xs font-semibold">{t('teamPerf.tasksTitle')}</h4>
+      <ul className="space-y-1.5 text-sm">
+        {rows.items.map((i) => (
+          <li key={i.id} className="flex items-center justify-between gap-3">
+            <span className="min-w-0 truncate">
+              {pick(i, 'task_name')}
+              {i.initiative && <span className="text-muted"> · {i.initiative.code ?? pick(i.initiative)}</span>}
+            </span>
+            <span className="shrink-0 text-xs text-muted">
+              {i.due_date && <span className="tabular-nums">{i.due_date} · </span>}
+              <span style={i.status === 'overdue' ? { color: STATUS.behind.text } : undefined}>{t(`initiatives.taskStatus.${i.status}`, { defaultValue: i.status })}</span>
+              {' · '}<span className="font-medium tabular-nums text-ink">{n(i.pct)}%</span>
             </span>
           </li>
         ))}
@@ -145,7 +184,8 @@ function Detail({ p }) {
         <WorkList title={t('teamPerf.projectsTitle')} rows={p.projects} />
         <WorkList title={t('teamPerf.initiativesTitle')} rows={p.initiatives} />
       </div>
-      {!p.kpis.length && !p.projects.items.length && !p.initiatives.items.length && <p className="text-sm text-muted">{t('teamPerf.nothingOwned')}</p>}
+      <TaskList rows={p.tasks} />
+      {!p.kpis.length && !p.projects.items.length && !p.initiatives.items.length && !p.tasks.items.length && <p className="text-sm text-muted">{t('teamPerf.nothingOwned')}</p>}
       {!p.unassigned && <p className="text-xs text-muted">{t('teamPerf.entriesLogged', { count: p.data.entries_logged })}</p>}
     </div>
   )
@@ -180,6 +220,7 @@ function PersonRows({ p, rank, basis, colSpan }) {
         <td className={td}><DataCell d={p.data} /></td>
         <td className={td}><WorkCell w={p.projects} /></td>
         <td className={td}><WorkCell w={p.initiatives} /></td>
+        <td className={td}><TaskCell w={p.tasks} /></td>
       </tr>
       {open && <tr><td colSpan={colSpan} className="p-0"><Detail p={p} /></td></tr>}
     </>
@@ -251,10 +292,10 @@ export default function TeamPerformancePage() {
     const rank = new Map()
     ranked.forEach((p, i) => rank.set(p.user_id, i > 0 && score(p) === score(ranked[i - 1]) ? rank.get(ranked[i - 1].user_id) : i + 1))
 
-    const hidden = people.filter((p) => !p.kpi_count && !p.projects.count && !p.initiatives.count && !p.is_me).length
+    const hidden = people.filter((p) => !p.kpi_count && !p.projects.count && !p.initiatives.count && !p.tasks.count && !p.is_me).length
     const needle = search.trim().toLowerCase()
     let rows = people
-      .filter((p) => showEmpty || p.kpi_count || p.projects.count || p.initiatives.count || p.is_me)
+      .filter((p) => showEmpty || p.kpi_count || p.projects.count || p.initiatives.count || p.tasks.count || p.is_me)
       .filter((p) => !needle || (p.name ?? '').toLowerCase().includes(needle))
     const byName = (a, b) => a.name.localeCompare(b.name)
     rows = [...rows].sort((a, b) => {
@@ -283,7 +324,7 @@ export default function TeamPerformancePage() {
   const { meta, summary, teams } = q.data
   const block = basis === 'ytd' ? summary.ytd : summary.current
   const single = meta.scope === 'self'
-  const COLS = 8
+  const COLS = 9
 
   return (
     <div className="space-y-6">
@@ -338,7 +379,7 @@ export default function TeamPerformancePage() {
           </div>
         )}
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[56rem] text-sm">
+          <table className="w-full min-w-[62rem] text-sm">
             <thead>
               <tr>
                 <th className={cn(th, 'w-10')}>{t('teamPerf.rank')}</th>
@@ -349,6 +390,7 @@ export default function TeamPerformancePage() {
                 <th className={th}>{t('teamPerf.dataCol')}</th>
                 <th className={th}>{t('teamPerf.projectsCol')}</th>
                 <th className={th}>{t('teamPerf.initiativesCol')}</th>
+                <th className={th}>{t('teamPerf.tasksCol')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-line">

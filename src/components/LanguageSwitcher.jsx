@@ -1,11 +1,14 @@
 import { useTranslation } from 'react-i18next'
+import { useAuthStore } from '@/stores/authStore'
 import { Languages } from 'lucide-react'
 import { ENABLED_LANGUAGES, IS_MULTILINGUAL } from '@/config/languages'
 
 export default function LanguageSwitcher() {
   const { i18n, t } = useTranslation()
-  // English-only deployments never see a switcher.
-  if (!IS_MULTILINGUAL) return null
+  const arabicAllowed = useAuthStore((s) => s.user?.company?.features?.arabic) !== false
+  // English-only deployments never see a switcher; a plan without Arabic loses that option.
+  const languages = ENABLED_LANGUAGES.filter((l) => l.code !== 'ar' || arabicAllowed)
+  if (!IS_MULTILINGUAL || languages.length < 2) return null
 
   const current = (i18n.language || '').split('-')[0]
   return (
@@ -17,7 +20,7 @@ export default function LanguageSwitcher() {
         onChange={(e) => i18n.changeLanguage(e.target.value)}
         className="h-9 rounded-md border border-line bg-white px-2 text-sm text-ink"
       >
-        {ENABLED_LANGUAGES.map((l) => (
+        {languages.map((l) => (
           <option key={l.code} value={l.code}>
             {l.label}
           </option>

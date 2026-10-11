@@ -502,7 +502,11 @@
     "confirmDelete": "Delete this initiative, its tasks and its progress history?",
     "confirmDeleteTask": "Delete this task?",
     "deleteError": "That action failed. Try again.",
-    "error": "Couldn't load the initiatives. Check your connection and try again."
+    "error": "Couldn't load the initiatives. Check your connection and try again.",
+    "assignee": "Assigned to",
+    "unassigned": "Unassigned",
+    "assignedTo": "Assigned to {{name}}",
+    "assigneeHint": "You can report this task's completion. The rest of the task can be changed by the initiative's owner or a manager."
   },
   "executionPlan": {
     "hint": "Projects of the selected year by department. Cancelled projects are not counted.",
@@ -602,7 +606,8 @@
       "editHint": "Data can only be changed in their own departments; with none ticked, they can change whatever they can see.",
       "allDepartments": "All departments",
       "none": "None assigned"
-    }
+    },
+    "inviteAccessHint": "The manager, departments and visibility chosen here are applied when the person accepts the invitation."
   },
   "invite": {
     "title": "Join {{company}}",
@@ -637,7 +642,19 @@
     "teamReportVisibility": "Team performance report for employees",
     "visibilityColleagues": "Employees see the ranking of their colleagues",
     "visibilityOwn": "Employees see only their own row",
-    "visibilityHint": "Admins and managers always see their teams. This choice applies to employees and viewers."
+    "visibilityHint": "Admins and managers always see their teams. This choice applies to employees and viewers.",
+    "plan": "Plan and usage",
+    "noPlan": "No plan assigned (unrestricted)",
+    "limitKpis": "Active KPIs",
+    "limitUsers": "Users (with pending invitations)",
+    "limitDepartments": "Departments",
+    "usedOf": "{{used}} of {{limit}}",
+    "usedUnlimited": "{{used}} (unlimited)",
+    "featProjects": "Projects and initiatives",
+    "featArabic": "Arabic",
+    "featPdf": "PDF export",
+    "planHint": "Limits are set by your plan. Contact your account manager to upgrade.",
+    "features": "Included features"
   },
   "profile": {
     "title": "My profile",
@@ -712,7 +729,10 @@
     "nothingOwned": "No KPIs, projects or initiatives are owned by this person for this year.",
     "entriesLogged": "Entries logged by this person this year: {{count}}",
     "empty": "Nobody matches. Try another name.",
-    "footnote": "Data entry counts the months up to the selected month that have a target but no actual value. Projects and initiatives show the average completion reported up to that month; late means off timeline or delayed.",
-    "error": "Couldn't load the report. Check your connection and try again."
+    "footnote": "Data entry counts the months up to the selected month that have a target but no actual value. Projects and initiatives show the average completion reported up to that month; late means off timeline or delayed. Tasks are the execution plan tasks assigned to the person in this year's initiatives; overdue is measured against today.",
+    "error": "Couldn't load the report. Check your connection and try again.",
+    "tasksCol": "Tasks",
+    "tasksTitle": "Assigned tasks",
+    "overdue": "{{count}} overdue"
   }
 }

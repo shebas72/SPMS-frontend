@@ -179,7 +179,7 @@ export default function UsersPage() {
   const { pick } = useFormat()
   const qc = useQueryClient()
   const me = useAuthStore((s) => s.user)
-  const [form, setForm] = useState({ email: '', role: 'viewer' })
+  const [form, setForm] = useState({ email: '', role: 'viewer', access_scope: 'own', manager_id: '', department_ids: [], access_department_ids: [] })
   const [notice, setNotice] = useState(null)
   const [error, setError] = useState('')
   const [editing, setEditing] = useState(null)
@@ -190,7 +190,9 @@ export default function UsersPage() {
   const fail = (e) => setError(msg(e, t('team.actionError')))
 
   const invite = useMutation({
-    mutationFn: () => api.post('/invitations', form),
+    mutationFn: () => api.post('/invitations', form.role === 'admin'
+      ? { email: form.email, role: form.role }
+      : { ...form, manager_id: form.manager_id || null }),
     onSuccess: (res) => { setNotice(res.data.data); setError(''); setForm((f) => ({ ...f, email: '' })); refresh() },
     onError: fail,
   })
@@ -229,12 +231,16 @@ export default function UsersPage() {
 
       <section className="space-y-4 rounded-lg border border-line bg-white p-5">
         <h2 className="text-sm font-semibold">{t('team.inviteTitle')}</h2>
-        <form className="flex flex-wrap items-end gap-3" onSubmit={(e) => { e.preventDefault(); setNotice(null); invite.mutate() }}>
-          <label className="block min-w-64 flex-1 text-sm"><span className="mb-1 block text-muted">{t('team.email')}</span>
-            <input required type="email" className={cn(field, 'w-full')} value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} /></label>
-          <label className="block text-sm"><span className="mb-1 block text-muted">{t('team.role')}</span>
-            <select className={field} value={form.role} onChange={(e) => setForm((f) => ({ ...f, role: e.target.value }))}>{roles.map((r) => <option key={r} value={r}>{t(`team.roles.${r}`)}</option>)}</select></label>
-          <Button type="submit" size="sm" disabled={invite.isPending}>{invite.isPending ? t('team.sending') : t('team.send')}</Button>
+        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); setNotice(null); invite.mutate() }}>
+          <div className="flex flex-wrap items-end gap-3">
+            <label className="block min-w-64 flex-1 text-sm"><span className="mb-1 block text-muted">{t('team.email')}</span>
+              <input required type="email" className={cn(field, 'w-full')} value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} /></label>
+            <label className="block text-sm"><span className="mb-1 block text-muted">{t('team.role')}</span>
+              <select className={field} value={form.role} onChange={(e) => setForm((f) => ({ ...f, role: e.target.value }))}>{roles.map((r) => <option key={r} value={r}>{t(`team.roles.${r}`)}</option>)}</select></label>
+            <Button type="submit" size="sm" disabled={invite.isPending}>{invite.isPending ? t('team.sending') : t('team.send')}</Button>
+          </div>
+          <AccessFields role={form.role} f={form} setF={setForm} departments={depts} managers={managers} />
+          <p className="text-xs text-muted">{t('team.inviteAccessHint')}</p>
         </form>
         <p className="text-xs text-muted">{roles.map((r) => `${t(`team.roles.${r}`)}: ${t(`team.roleHints.${r}`)}`).join(' · ')}</p>
         {notice && <InviteLink notice={notice} />}
@@ -248,7 +254,10 @@ export default function UsersPage() {
           <ul className="divide-y divide-line border-t border-line">
             {invites.data.map((i) => (
               <li key={i.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-3 text-sm">
-                <span className="min-w-56 flex-1 font-medium">{i.email}</span>
+                <span className="min-w-56 flex-1">
+                  <span className="block font-medium">{i.email}</span>
+                  {i.role !== 'admin' && <span className="block text-xs text-muted">{accessText(i)}</span>}
+                </span>
                 <span className="text-xs text-muted">{t(`team.roles.${i.role}`)}</span>
                 <span className="text-xs" style={{ color: i.expired ? '#A32B1E' : undefined }}>{i.expired ? t('team.expired') : t('team.expires', { date: i.expires_at })}</span>
                 <span className="flex gap-2">

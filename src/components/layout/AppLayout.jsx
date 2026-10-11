@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
@@ -22,10 +22,10 @@ const NAV = [
   { to: '/departments', key: 'departments', icon: Building2 },
   { to: '/kpis', key: 'kpis', icon: LineChart },
   { to: '/kpi-entry', key: 'kpiEntry', icon: ClipboardEdit },
-  { to: '/projects', key: 'projects', icon: FolderKanban },
+  { to: '/projects', key: 'projects', icon: FolderKanban, feature: 'projects' },
   { to: '/analysis', key: 'analysis', icon: ListChecks },
-  { to: '/initiatives', key: 'initiatives', icon: ListTodo },
-  { to: '/execution-plan', key: 'executionPlan', icon: CalendarCheck },
+  { to: '/initiatives', key: 'initiatives', icon: ListTodo, feature: 'projects' },
+  { to: '/execution-plan', key: 'executionPlan', icon: CalendarCheck, feature: 'projects' },
   { to: '/team-performance', key: 'teamPerformance', icon: Trophy },
   { to: '/users', key: 'users', icon: Users, admin: true },
   { to: '/settings', key: 'settings', icon: SettingsIcon, admin: true },
@@ -47,6 +47,13 @@ export default function AppLayout() {
     },
     staleTime: 5 * 60 * 1000,
   })
+
+  // Plan features: a flag is only hidden when the plan explicitly says false (unknown = allowed).
+  const features = user?.company?.features ?? {}
+  const arabicAllowed = features.arabic !== false
+  useEffect(() => {
+    if (!arabicAllowed && (i18n.language || '').startsWith('ar')) i18n.changeLanguage('en')
+  }, [arabicAllowed, i18n])
 
   const signOut = async () => {
     await logout()
@@ -75,7 +82,7 @@ export default function AppLayout() {
   : <span className="text-base font-semibold text-brand">{t('app.name')}</span>}
         </div>
         <nav className="flex flex-col gap-1 p-3">
-          {NAV.filter((i) => !i.admin || isAdmin(user)).map(({ to, key, icon: Icon, end }) => (
+          {NAV.filter((i) => (!i.admin || isAdmin(user)) && (!i.feature || features[i.feature] !== false)).map(({ to, key, icon: Icon, end }) => (
             <NavLink
               key={to}
               to={to}
