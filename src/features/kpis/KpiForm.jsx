@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { useFormat } from '@/features/dashboard/ui'
 import { useAuthStore } from '@/stores/authStore'
 import { canEditDepartment } from '@/lib/roles'
+import ArabicOnly from '@/components/ArabicOnly'
 
 const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1)
 const field = 'h-9 w-full rounded-md border border-line bg-white px-2 text-sm disabled:bg-brand-soft disabled:text-muted'
@@ -93,7 +94,7 @@ function Form({ kpi, year, existing, objectives, departments, onDone }) {
       <div className="grid gap-4 md:grid-cols-3">
         <Field label={t('kpiList.code')}><input required className={field} value={f.code} onChange={set('code')} /></Field>
         <Field label={t('kpiList.name')} className="md:col-span-1"><input required className={field} value={f.name} onChange={set('name')} /></Field>
-        <Field label={t('kpiList.nameAr')}><input dir="rtl" className={field} value={f.name_ar} onChange={set('name_ar')} /></Field>
+        <ArabicOnly><Field label={t('kpiList.nameAr')}><input dir="rtl" className={field} value={f.name_ar} onChange={set('name_ar')} /></Field></ArabicOnly>
         <Field label={t('kpiList.objective')}>
           <select className={field} value={f.strategic_objective_id} onChange={set('strategic_objective_id')}>
             <option value="">—</option>

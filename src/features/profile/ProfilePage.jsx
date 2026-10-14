@@ -5,6 +5,7 @@ import api from '@/lib/api'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/authStore'
+import { useFormat } from '@/features/dashboard/ui'
 
 const field = 'h-10 w-full rounded-md border border-line bg-white px-3 text-sm'
 const L = ({ label, children }) => <label className="block text-sm"><span className="mb-1 block text-muted">{label}</span>{children}</label>
@@ -65,12 +66,13 @@ function Password() {
 
 export default function ProfilePage() {
   const { t } = useTranslation()
+  const { pick } = useFormat()
   const user = useAuthStore((s) => s.user)
   return (
     <div className="max-w-3xl space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">{t('profile.title')}</h1>
-        <p className="mt-1 text-sm text-muted">{(user?.roles ?? []).map((r) => t(`team.roles.${typeof r === 'string' ? r : r.name}`, { defaultValue: typeof r === 'string' ? r : r.name })).join(', ')}</p>
+        <p className="mt-1 text-sm text-muted">{user?.role ? pick(user.role) : ''}</p>
       </div>
       <Details key={`${user?.email}-${user?.name}`} user={user ?? {}} />
       <Password />

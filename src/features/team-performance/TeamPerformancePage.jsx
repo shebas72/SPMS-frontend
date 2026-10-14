@@ -210,7 +210,7 @@ function PersonRows({ p, rank, basis, colSpan }) {
               {p.is_me && <span className="ms-1.5 text-xs text-muted">{t('team.you')}</span>}
               {!p.is_active && <span className="ms-1.5 text-xs text-muted">{t('team.inactive')}</span>}
               <span className="block text-xs text-muted">
-                {p.unassigned ? t('teamPerf.unassignedHint') : [p.role && t(`team.roles.${p.role}`, { defaultValue: p.role }), ...p.departments.map((d) => pick(d))].filter(Boolean).join(' · ')}
+                {p.unassigned ? t('teamPerf.unassignedHint') : [p.role_label && pick(p.role_label), ...p.departments.map((d) => pick(d))].filter(Boolean).join(' · ')}
               </span>
             </span>
           </button>

@@ -10,7 +10,7 @@ const field = 'h-10 w-full rounded-md border border-line bg-white px-3 text-sm'
 
 // Public page opened from the invitation link: /accept-invite?token=...
 export default function AcceptInvitePage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const token = useSearchParams()[0].get('token') ?? ''
   const setSession = useAuthStore((s) => s.setSession)
@@ -33,7 +33,7 @@ export default function AcceptInvitePage() {
           <>
             <div>
               <h1 className="text-2xl font-semibold">{t('invite.title', { company: invite.data.company })}</h1>
-              <p className="mt-2 text-sm text-muted">{t('invite.intro', { email: invite.data.email, role: t(`team.roles.${invite.data.role}`) })}</p>
+              <p className="mt-2 text-sm text-muted">{t('invite.intro', { email: invite.data.email, role: invite.data.role_label ? ((i18n.language || '').startsWith('ar') && invite.data.role_label.name_ar) || invite.data.role_label.name : invite.data.role })}</p>
             </div>
             <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); accept.mutate() }}>
               <label className="block text-sm"><span className="mb-1 block text-muted">{t('invite.name')}</span><input required autoComplete="name" className={field} value={f.name} onChange={set('name')} /></label>

@@ -4,13 +4,14 @@ import { useTranslation } from 'react-i18next'
 import { Pencil, Plus, Trash2 } from 'lucide-react'
 import api from '@/lib/api'
 import { cn } from '@/lib/utils'
-import { canEdit, canEditDepartment, canManageItem, canWorkOnItem } from '@/lib/roles'
+import { can, canEditDepartment, canManageItem, canWorkOnItem } from '@/lib/roles'
 import { fetchAll } from '@/lib/fetchAll'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/authStore'
 import { PeriodPicker } from '@/features/dashboard/DashboardPage'
 import { STATUS, useFormat } from '@/features/dashboard/ui'
 import { Ring, Sparkline, colorOf } from './charts'
+import ArabicOnly from '@/components/ArabicOnly'
 
 const TYPES = ['strategic', 'digital_transformation', 'operational']
 const STATUSES = ['not_started', 'in_progress', 'completed', 'delayed', 'cancelled']
@@ -58,9 +59,9 @@ function ProjectForm({ project, year, month, objectives, departments, onDone }) 
       <div className="grid gap-4 md:grid-cols-3">
         <L label={t('projects.code')}><input className={field} value={f.code} onChange={set('code')} /></L>
         <L label={t('projects.name')}><input required className={field} value={f.name} onChange={set('name')} /></L>
-        <L label={t('projects.nameAr')}><input dir="rtl" className={field} value={f.name_ar} onChange={set('name_ar')} /></L>
+        <ArabicOnly><L label={t('projects.nameAr')}><input dir="rtl" className={field} value={f.name_ar} onChange={set('name_ar')} /></L></ArabicOnly>
         <L label={t('projects.description')}><textarea rows={2} className={cn(field, 'h-auto py-2')} value={f.description} onChange={set('description')} /></L>
-        <L label={t('projects.descriptionAr')}><textarea dir="rtl" rows={2} className={cn(field, 'h-auto py-2')} value={f.description_ar} onChange={set('description_ar')} /></L>
+        <ArabicOnly><L label={t('projects.descriptionAr')}><textarea dir="rtl" rows={2} className={cn(field, 'h-auto py-2')} value={f.description_ar} onChange={set('description_ar')} /></L></ArabicOnly>
         <L label={t('dashboard.year')}><input type="number" min="2000" max="2100" className={field} value={f.year} onChange={set('year')} /></L>
         {!project && <L label={t('projects.initialPct')}><input type="number" min="0" max="100" step="any" className={field} value={initial} onChange={(e) => setInitial(e.target.value)} /></L>}
         <L label={t('projects.type')}><select className={field} value={f.type} onChange={set('type')}>{TYPES.map((x) => <option key={x} value={x}>{t(`projects.types.${x}`)}</option>)}</select></L>
@@ -123,7 +124,7 @@ export default function ProjectsPage() {
   const { n, pick, month: monthShort } = useFormat()
   const qc = useQueryClient()
   const user = useAuthStore((s) => s.user)
-  const manager = canEdit(user) // may add projects (the form limits the department to the ones they manage)
+  const manager = can(user, 'projects.manage') // may add projects (the form limits the department to the ones they manage)
   const [period, setPeriod] = useState({})
   const [view, setView] = useState('month')
   const [selected, setSelected] = useState(null)

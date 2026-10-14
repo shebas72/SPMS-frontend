@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import api from '@/lib/api'
 import { cn } from '@/lib/utils'
-import { isAdmin } from '@/lib/admin'
+import { can, useRoleLabel } from '@/lib/roles'
 import { fetchAll } from '@/lib/fetchAll'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/authStore'
@@ -102,7 +102,7 @@ function AccessFields({ role, f, setF, departments, managers }) {
   )
 }
 
-function AddUserForm({ roles, departments, managers }) {
+function AddUserForm({ roles, departments, managers, label }) {
   const { t } = useTranslation()
   const qc = useQueryClient()
   const [f, setF] = useState({ name: '', email: '', role: 'viewer', password: '', access_scope: 'own', manager_id: '', department_ids: [], access_department_ids: [] })
@@ -122,7 +122,7 @@ function AddUserForm({ roles, departments, managers }) {
         <div className="grid gap-3 md:grid-cols-5 md:items-end">
         <Lbl label={t('team.col.name')}><input required className={cn(field, 'w-full')} value={f.name} onChange={set('name')} /></Lbl>
         <Lbl label={t('team.email')}><input required type="email" className={cn(field, 'w-full')} value={f.email} onChange={set('email')} /></Lbl>
-        <Lbl label={t('team.role')}><select className={cn(field, 'w-full')} value={f.role} onChange={set('role')}>{roles.map((r) => <option key={r} value={r}>{t(`team.roles.${r}`)}</option>)}</select></Lbl>
+        <Lbl label={t('team.role')}><select className={cn(field, 'w-full')} value={f.role} onChange={set('role')}>{roles.map((r) => <option key={r} value={r}>{label(r)}</option>)}</select></Lbl>
         <Lbl label={t('team.passwordOptional')}><input type="password" minLength={8} autoComplete="new-password" className={cn(field, 'w-full')} value={f.password} onChange={set('password')} /></Lbl>
         <Button type="submit" size="sm" disabled={create.isPending}>{create.isPending ? t('team.adding') : t('team.addUser')}</Button>
         </div>
@@ -183,9 +183,9 @@ export default function UsersPage() {
   const [notice, setNotice] = useState(null)
   const [error, setError] = useState('')
   const [editing, setEditing] = useState(null)
-  const users = useQuery({ queryKey: ['team-users'], queryFn: async () => (await api.get('/users')).data, enabled: isAdmin(me) })
-  const departments = useQuery({ queryKey: ['lookup-departments'], queryFn: () => fetchAll('/departments'), enabled: isAdmin(me) })
-  const invites = useQuery({ queryKey: ['team-invites'], queryFn: async () => (await api.get('/invitations')).data.data, enabled: isAdmin(me) })
+  const users = useQuery({ queryKey: ['team-users'], queryFn: async () => (await api.get('/users')).data, enabled: can(me, 'team.manage') })
+  const departments = useQuery({ queryKey: ['lookup-departments'], queryFn: () => fetchAll('/departments'), enabled: can(me, 'team.manage') })
+  const invites = useQuery({ queryKey: ['team-invites'], queryFn: async () => (await api.get('/invitations')).data.data, enabled: can(me, 'team.manage') })
   const refresh = () => { qc.invalidateQueries({ queryKey: ['team-users'] }); qc.invalidateQueries({ queryKey: ['team-invites'] }) }
   const fail = (e) => setError(msg(e, t('team.actionError')))
 
@@ -200,7 +200,7 @@ export default function UsersPage() {
   const revoke = useMutation({ mutationFn: (id) => api.delete(`/invitations/${id}`), onSuccess: () => { setError(''); refresh() }, onError: fail })
   const update = useMutation({ mutationFn: ({ id, ...body }) => api.put(`/users/${id}`, body), onSuccess: () => { setError(''); refresh() }, onError: fail })
 
-  if (!isAdmin(me)) return <p className="text-muted">{t('team.adminOnly')}</p>
+  if (!can(me, 'team.manage')) return <p className="text-muted">{t('team.adminOnly')}</p>
   if (users.isLoading || invites.isLoading) return <p className="text-muted">{t('common.loading')}</p>
   if (users.isError || invites.isError) {
     return (
@@ -211,8 +211,9 @@ export default function UsersPage() {
     )
   }
   const roles = users.data.meta.roles
+  const label = useRoleLabel(users.data.meta.role_labels)
   const depts = departments.data ?? []
-  const managers = users.data.data.filter((u) => u.is_active && ['admin', 'manager'].includes(u.role))
+  const managers = users.data.data.filter((u) => u.is_active && u.is_lead)
   const accessText = (u) => {
     if (u.role === 'admin' || u.access_scope === 'all') return t('team.access.allDepartments')
     const ids = u.access_scope === 'selected' ? u.access_department_ids : u.department_ids
@@ -236,17 +237,17 @@ export default function UsersPage() {
             <label className="block min-w-64 flex-1 text-sm"><span className="mb-1 block text-muted">{t('team.email')}</span>
               <input required type="email" className={cn(field, 'w-full')} value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} /></label>
             <label className="block text-sm"><span className="mb-1 block text-muted">{t('team.role')}</span>
-              <select className={field} value={form.role} onChange={(e) => setForm((f) => ({ ...f, role: e.target.value }))}>{roles.map((r) => <option key={r} value={r}>{t(`team.roles.${r}`)}</option>)}</select></label>
+              <select className={field} value={form.role} onChange={(e) => setForm((f) => ({ ...f, role: e.target.value }))}>{roles.map((r) => <option key={r} value={r}>{label(r)}</option>)}</select></label>
             <Button type="submit" size="sm" disabled={invite.isPending}>{invite.isPending ? t('team.sending') : t('team.send')}</Button>
           </div>
           <AccessFields role={form.role} f={form} setF={setForm} departments={depts} managers={managers} />
           <p className="text-xs text-muted">{t('team.inviteAccessHint')}</p>
         </form>
-        <p className="text-xs text-muted">{roles.map((r) => `${t(`team.roles.${r}`)}: ${t(`team.roleHints.${r}`)}`).join(' · ')}</p>
+        <p className="text-xs text-muted">{t('team.rolesHint')}</p>
         {notice && <InviteLink notice={notice} />}
       </section>
 
-      <AddUserForm roles={roles} departments={depts} managers={managers} />
+      <AddUserForm roles={roles} departments={depts} managers={managers} label={label} />
 
       <section className="rounded-lg border border-line bg-white">
         <h2 className="p-5 pb-3 text-sm font-semibold">{t('team.pending')}</h2>
@@ -258,7 +259,7 @@ export default function UsersPage() {
                   <span className="block font-medium">{i.email}</span>
                   {i.role !== 'admin' && <span className="block text-xs text-muted">{accessText(i)}</span>}
                 </span>
-                <span className="text-xs text-muted">{t(`team.roles.${i.role}`)}</span>
+                <span className="text-xs text-muted">{label(i.role)}</span>
                 <span className="text-xs" style={{ color: i.expired ? '#A32B1E' : undefined }}>{i.expired ? t('team.expired') : t('team.expires', { date: i.expires_at })}</span>
                 <span className="flex gap-2">
                   <Button size="sm" variant="outline" disabled={resend.isPending} onClick={() => { setNotice(null); resend.mutate(i.id) }}>{t('team.resend')}</Button>
@@ -286,7 +287,7 @@ export default function UsersPage() {
                   <td className="px-4 py-3">
                     <select className={field} value={u.role ?? ''} disabled={self || update.isPending} aria-label={`${t('team.role')} ${u.name}`} onChange={(e) => update.mutate({ id: u.id, role: e.target.value })}>
                       {!u.role && <option value="">—</option>}
-                      {roles.map((r) => <option key={r} value={r}>{t(`team.roles.${r}`)}</option>)}
+                      {roles.map((r) => <option key={r} value={r}>{label(r)}</option>)}
                     </select>
                   </td>
                   <td className="px-4 py-3 text-xs">{accessText(u)}</td>

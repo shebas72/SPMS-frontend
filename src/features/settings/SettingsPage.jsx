@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import api from '@/lib/api'
 import { cn } from '@/lib/utils'
-import { isAdmin } from '@/lib/admin'
+import { can } from '@/lib/roles'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/authStore'
 import { useFormat } from '@/features/dashboard/ui'
@@ -37,6 +37,8 @@ function PlanCard() {
   const { t, i18n } = useTranslation()
   const q = useQuery({ queryKey: ['company-plan'], queryFn: async () => (await api.get('/company/plan')).data.data })
   if (q.isLoading || q.isError || !q.data) return null
+  // Standalone has no plans and no limits, so there is nothing to show.
+  if (q.data.mode === 'standalone') return null
   const { plan, limits, features } = q.data
   const name = plan ? ((i18n.language || '').startsWith('ar') && plan.name_ar ? plan.name_ar : plan.name) : t('settings.noPlan')
   const feats = [['projects', 'featProjects'], ['arabic', 'featArabic'], ['pdf_export', 'featPdf']]
@@ -72,7 +74,7 @@ function Form({ company }) {
   const { monthLong } = useFormat()
   const qc = useQueryClient()
   const fileRef = useRef(null)
-  const [f, setF] = useState({ name: company.name ?? '', name_ar: company.name_ar ?? '', timezone: company.timezone ?? '', default_language: company.default_language ?? '', team_report_visibility: company.team_report_visibility ?? 'colleagues', fiscal_year_start: company.fiscal_year_start ?? '01-01' })
+  const [f, setF] = useState({ name: company.name ?? '', name_ar: company.name_ar ?? '', timezone: company.timezone ?? '', default_language: company.default_language ?? '', arabic_enabled: !!company.arabic_enabled, team_report_visibility: company.team_report_visibility ?? 'colleagues', fiscal_year_start: company.fiscal_year_start ?? '01-01' })
   const [saved, setSaved] = useState(false)
   const set = (k) => (e) => { setSaved(false); setF((x) => ({ ...x, [k]: e.target.value })) }
   const done = () => { qc.invalidateQueries({ queryKey: ['company'] }); qc.invalidateQueries({ queryKey: ['me'] }) } // 'me' refreshes the sidebar logo and name
@@ -112,14 +114,22 @@ function Form({ company }) {
         <h2 className="text-sm font-semibold">{t('settings.profile')}</h2>
         <div className="grid gap-4 md:grid-cols-2">
           <L label={t('settings.name')}><input required className={field} value={f.name} onChange={set('name')} /></L>
-          <L label={t('settings.nameAr')}><input dir="rtl" className={field} value={f.name_ar} onChange={set('name_ar')} /></L>
+          {f.arabic_enabled && <L label={t('settings.nameAr')}><input dir="rtl" className={field} value={f.name_ar} onChange={set('name_ar')} /></L>}
           <L label={t('settings.timezone')}>
             {zones.length ? (
               <select className={field} value={f.timezone} onChange={set('timezone')}><option value="">—</option>{zones.map((z) => <option key={z} value={z}>{z}</option>)}</select>
             ) : <input className={field} value={f.timezone} onChange={set('timezone')} placeholder="Asia/Riyadh" />}
           </L>
+          <label className="flex items-start gap-3 text-sm md:col-span-2">
+            <input type="checkbox" className="mt-0.5 h-4 w-4 accent-ink" checked={f.arabic_enabled} disabled={!arabicAllowed}
+              onChange={(e) => { setSaved(false); setF((x) => ({ ...x, arabic_enabled: e.target.checked, default_language: !e.target.checked && x.default_language === 'ar' ? 'en' : x.default_language })) }} />
+            <span>
+              <span className="block font-medium">{t('settings.arabicEnabled')}</span>
+              <span className="block text-xs text-muted">{arabicAllowed ? t('settings.arabicEnabledHint') : t('settings.arabicPlanHint')}</span>
+            </span>
+          </label>
           <L label={t('settings.language')}>
-            <select className={field} value={f.default_language} onChange={set('default_language')}><option value="">—</option><option value="en">English</option>{arabicAllowed && <option value="ar">العربية</option>}</select>
+            <select className={field} value={f.default_language} onChange={set('default_language')}><option value="">—</option><option value="en">English</option>{arabicAllowed && f.arabic_enabled && <option value="ar">العربية</option>}</select>
           </L>
           <L label={t('settings.fiscalYearStart')}>
             <select className={field} value={f.fiscal_year_start} onChange={set('fiscal_year_start')}>
@@ -149,7 +159,7 @@ export default function SettingsPage() {
   const { t } = useTranslation()
   const me = useAuthStore((s) => s.user)
   const q = useQuery({ queryKey: ['company'], queryFn: async () => (await api.get('/company')).data.data })
-  if (!isAdmin(me)) return <p className="text-muted">{t('settings.adminOnly')}</p>
+  if (!can(me, 'settings.manage')) return <p className="text-muted">{t('settings.adminOnly')}</p>
   if (q.isLoading) return <p className="text-muted">{t('common.loading')}</p>
   if (q.isError) return <p className="text-sm">{t('settings.error')}</p>
   return (

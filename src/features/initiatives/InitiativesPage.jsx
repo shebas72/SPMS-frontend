@@ -4,13 +4,14 @@ import { useTranslation } from 'react-i18next'
 import { Pencil, Plus, Trash2 } from 'lucide-react'
 import api from '@/lib/api'
 import { cn } from '@/lib/utils'
-import { canEdit, canEditDepartment, canManageItem, canWorkOnItem } from '@/lib/roles'
+import { can, canEditDepartment, canManageItem, canWorkOnItem } from '@/lib/roles'
 import { fetchAll } from '@/lib/fetchAll'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/authStore'
 import { PeriodPicker } from '@/features/dashboard/DashboardPage'
 import { STATUS, useFormat } from '@/features/dashboard/ui'
 import { Ring, Sparkline, colorOf } from '@/features/projects/charts'
+import ArabicOnly from '@/components/ArabicOnly'
 
 const STATUSES = ['not_started', 'in_progress', 'completed', 'delayed', 'cancelled']
 const TASK_COLOR = { completed: STATUS.on_track.text, in_progress: '#185FA5', overdue: STATUS.behind.text, pending: STATUS.none.text }
@@ -72,9 +73,9 @@ function InitiativeForm({ initiative, year, month, objectives, departments, proj
       <div className="grid gap-4 md:grid-cols-3">
         <L label={t('projects.code')}><input className={field} value={f.code} onChange={set('code')} /></L>
         <L label={t('projects.name')}><input required className={field} value={f.name} onChange={set('name')} /></L>
-        <L label={t('projects.nameAr')}><input dir="rtl" className={field} value={f.name_ar} onChange={set('name_ar')} /></L>
+        <ArabicOnly><L label={t('projects.nameAr')}><input dir="rtl" className={field} value={f.name_ar} onChange={set('name_ar')} /></L></ArabicOnly>
         <L label={t('projects.description')}><textarea rows={2} className={cn(field, 'h-auto py-2')} value={f.description} onChange={set('description')} /></L>
-        <L label={t('projects.descriptionAr')}><textarea dir="rtl" rows={2} className={cn(field, 'h-auto py-2')} value={f.description_ar} onChange={set('description_ar')} /></L>
+        <ArabicOnly><L label={t('projects.descriptionAr')}><textarea dir="rtl" rows={2} className={cn(field, 'h-auto py-2')} value={f.description_ar} onChange={set('description_ar')} /></L></ArabicOnly>
         <L label={t('dashboard.year')}><input type="number" min="2000" max="2100" className={field} value={f.year} onChange={set('year')} /></L>
         <L label={t('projects.status')}><select className={field} value={f.status} onChange={set('status')}>{STATUSES.map((x) => <option key={x} value={x}>{t(`projects.statuses.${x}`)}</option>)}</select></L>
         <L label={t('projects.department')}><select required={!anyDept} className={field} value={f.department_id} onChange={set('department_id')}>{anyDept && <option value="">—</option>}{deptOptions.map((d) => <option key={d.id} value={d.id}>{pick(d)}</option>)}</select></L>
@@ -126,7 +127,7 @@ function TaskForm({ initiative, task, limited, onDone }) {
       ) : (
         <>
           <L label={t('initiatives.taskName')} className="min-w-48 flex-1"><input required className={field} value={f.task_name} onChange={set('task_name')} /></L>
-          <L label={t('initiatives.taskNameAr')} className="min-w-48 flex-1"><input dir="rtl" className={field} value={f.task_name_ar} onChange={set('task_name_ar')} /></L>
+          <ArabicOnly><L label={t('initiatives.taskNameAr')} className="min-w-48 flex-1"><input dir="rtl" className={field} value={f.task_name_ar} onChange={set('task_name_ar')} /></L></ArabicOnly>
           <L label={t('initiatives.assignee')} className="min-w-40">
             <select className={field} value={f.assigned_to} onChange={set('assigned_to')}>
               <option value="">{t('initiatives.unassigned')}</option>
@@ -176,7 +177,7 @@ export default function InitiativesPage() {
   const { n, pick } = useFormat()
   const qc = useQueryClient()
   const user = useAuthStore((s) => s.user)
-  const manager = canEdit(user) // may add initiatives (the form limits the department to the ones they manage)
+  const manager = can(user, 'projects.manage') // may add initiatives (the form limits the department to the ones they manage)
   const [period, setPeriod] = useState({})
   const [view, setView] = useState('month')
   const [selected, setSelected] = useState(null)

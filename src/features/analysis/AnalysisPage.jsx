@@ -6,12 +6,13 @@ import Chart from 'react-apexcharts'
 import { Check, Pencil, Plus, Trash2, X } from 'lucide-react'
 import api from '@/lib/api'
 import { cn } from '@/lib/utils'
-import { canManageItem } from '@/lib/roles'
+import { canReviewItem } from '@/lib/roles'
 import { fetchAll } from '@/lib/fetchAll'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/authStore'
 import { PeriodPicker } from '@/features/dashboard/DashboardPage'
 import { StatusBadge, STATUS, useFormat } from '@/features/dashboard/ui'
+import ArabicOnly from '@/components/ArabicOnly'
 
 const CAUSES = ['resources_shortage', 'technical_challenges', 'administrative', 'lack_of_followup', 'other']
 const CAUSE_COLORS = { resources_shortage: '#00979D', technical_challenges: '#00436B', administrative: '#00AEEF', lack_of_followup: '#B3B3B3', other: '#0B2536' }
@@ -58,9 +59,9 @@ function ProposalForm({ kpi, proposal, period, onDone }) {
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         <L label={t('analysis.titleEn')}><input required className={field} value={f.title} onChange={set('title')} /></L>
-        <L label={t('analysis.titleAr')}><input dir="rtl" className={field} value={f.title_ar} onChange={set('title_ar')} /></L>
+        <ArabicOnly><L label={t('analysis.titleAr')}><input dir="rtl" className={field} value={f.title_ar} onChange={set('title_ar')} /></L></ArabicOnly>
         <L label={t('analysis.descEn')}><textarea required rows={3} className={cn(field, 'h-auto py-2')} value={f.description} onChange={set('description')} /></L>
-        <L label={t('analysis.descAr')}><textarea dir="rtl" rows={3} className={cn(field, 'h-auto py-2')} value={f.description_ar} onChange={set('description_ar')} /></L>
+        <ArabicOnly><L label={t('analysis.descAr')}><textarea dir="rtl" rows={3} className={cn(field, 'h-auto py-2')} value={f.description_ar} onChange={set('description_ar')} /></L></ArabicOnly>
         <L label={t('analysis.rootCause')}>
           <select className={field} value={f.root_cause} onChange={set('root_cause')}>{CAUSES.map((c) => <option key={c} value={c}>{t(`analysis.causes.${c}`)}</option>)}</select>
         </L>
@@ -128,7 +129,7 @@ export default function AnalysisPage() {
   const lowPct = total ? Math.round((counts.low / total) * 1000) / 10 : 0
   const causeTotal = Object.values(causeCounts).reduce((a, b) => a + b, 0)
   // Admins/managers act on the proposals of the departments they manage; the submitter can still change their own while it is pending.
-  const canReview = (x) => canManageItem(user, x)
+  const canReview = (x) => canReviewItem(user, x)
   const canModify = (x) => canReview(x) || (x.submitted_by === user?.id && x.status === 'pending')
   const list = (proposals.data ?? []).filter((x) => !statusFilter || x.status === statusFilter)
   const donut = { chart: { type: 'donut', fontFamily: 'inherit', animations: { enabled: false } }, legend: { position: 'bottom' }, dataLabels: { enabled: false }, stroke: { width: 1 } }

@@ -5,9 +5,10 @@ import { Pencil, Plus, Trash2 } from 'lucide-react'
 import api from '@/lib/api'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { isAdmin } from '@/lib/admin'
+import { can } from '@/lib/roles'
 import { useAuthStore } from '@/stores/authStore'
 import { useFormat } from '@/features/dashboard/ui'
+import ArabicOnly from '@/components/ArabicOnly'
 
 const KEY = ['strategy-house']
 const field = 'w-full rounded-md border border-line bg-white px-3 py-2 text-sm'
@@ -59,9 +60,9 @@ function HouseForm({ house, onDone }) {
     <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); save.mutate() }}>
       <div className="grid gap-4 md:grid-cols-2">
         <Field label={t('strategyHouse.missionEn')}><textarea className={field} rows={4} value={f.mission} onChange={set('mission')} /></Field>
-        <Field label={t('strategyHouse.missionAr')}><textarea className={field} rows={4} dir="rtl" value={f.mission_ar} onChange={set('mission_ar')} /></Field>
+        <ArabicOnly><Field label={t('strategyHouse.missionAr')}><textarea className={field} rows={4} dir="rtl" value={f.mission_ar} onChange={set('mission_ar')} /></Field></ArabicOnly>
         <Field label={t('strategyHouse.visionEn')}><textarea className={field} rows={4} value={f.vision} onChange={set('vision')} /></Field>
-        <Field label={t('strategyHouse.visionAr')}><textarea className={field} rows={4} dir="rtl" value={f.vision_ar} onChange={set('vision_ar')} /></Field>
+        <ArabicOnly><Field label={t('strategyHouse.visionAr')}><textarea className={field} rows={4} dir="rtl" value={f.vision_ar} onChange={set('vision_ar')} /></Field></ArabicOnly>
         <Field label={t('dashboard.year')}><input type="number" min="2000" max="2100" className={cn(field, 'md:w-32')} value={f.year} onChange={set('year')} /></Field>
       </div>
       <Actions mutation={save} onCancel={onDone} />
@@ -121,9 +122,9 @@ function ValueForm({ initial, onDone }) {
       <h3 className="text-sm font-semibold">{initial.id ? t('strategyHouse.editValue') : t('strategyHouse.addValue')}</h3>
       <div className="grid gap-4 md:grid-cols-2">
         <Field label={t('strategyHouse.name')}><input required className={field} value={f.name} onChange={set('name')} /></Field>
-        <Field label={t('strategyHouse.nameAr')}><input dir="rtl" className={field} value={f.name_ar} onChange={set('name_ar')} /></Field>
+        <ArabicOnly><Field label={t('strategyHouse.nameAr')}><input dir="rtl" className={field} value={f.name_ar} onChange={set('name_ar')} /></Field></ArabicOnly>
         <Field label={t('strategyHouse.description')}><textarea rows={3} className={field} value={f.description} onChange={set('description')} /></Field>
-        <Field label={t('strategyHouse.descriptionAr')}><textarea rows={3} dir="rtl" className={field} value={f.description_ar} onChange={set('description_ar')} /></Field>
+        <ArabicOnly><Field label={t('strategyHouse.descriptionAr')}><textarea rows={3} dir="rtl" className={field} value={f.description_ar} onChange={set('description_ar')} /></Field></ArabicOnly>
         <Field label={t('strategyHouse.color')}><input type="color" className="h-9 w-16 rounded-md border border-line bg-white p-1" value={f.color} onChange={set('color')} /></Field>
       </div>
       <Actions mutation={save} onCancel={onDone} />
@@ -158,7 +159,7 @@ function ValueCard({ v, editable, onEdit }) {
 export default function StrategyHousePage() {
   const { t } = useTranslation()
   const { n, pick } = useFormat()
-  const editable = isAdmin(useAuthStore((s) => s.user))
+  const editable = can(useAuthStore((s) => s.user), 'strategy.manage')
   const { data, isLoading, isError, refetch } = useQuery({ queryKey: KEY, queryFn: async () => (await api.get('/strategy-house')).data.data })
   const [editHouse, setEditHouse] = useState(false)
   const [editWeights, setEditWeights] = useState(false)

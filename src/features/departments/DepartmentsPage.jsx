@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ChevronDown, ChevronRight, Pencil, Plus, Trash2 } from 'lucide-react'
 import api from '@/lib/api'
 import { cn } from '@/lib/utils'
-import { canEdit, canEditDepartment } from '@/lib/roles'
+import { can, canEditDepartment } from '@/lib/roles'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/authStore'
 import { PeriodPicker } from '@/features/dashboard/DashboardPage'
@@ -12,6 +12,7 @@ import DepartmentOverview from './DepartmentOverview'
 import { ViewSwitch } from '@/features/performance/trendCharts'
 import { Counts, ScoreBar, StatusBadge, keyOf, statusOf, useFormat } from '@/features/dashboard/ui'
 import PdfButton from '@/components/PdfButton'
+import ArabicOnly from '@/components/ArabicOnly'
 
 const GRID = 'md:grid-cols-[minmax(0,2.2fr)_minmax(0,2fr)_minmax(0,1fr)_minmax(0,2fr)_auto]'
 const field = 'h-9 w-full rounded-md border border-line bg-white px-2 text-sm'
@@ -51,7 +52,7 @@ function DeptForm({ dept, parentId, rows, byParent, onDone }) {
       <h2 className="text-sm font-semibold">{dept ? t('departmentsPage.editDepartment') : t('departmentsPage.newDepartment')}</h2>
       <div className="grid gap-4 md:grid-cols-3">
         <L label={t('departmentsPage.name')}><input required className={field} value={f.name} onChange={set('name')} /></L>
-        <L label={t('departmentsPage.nameAr')}><input dir="rtl" className={field} value={f.name_ar} onChange={set('name_ar')} /></L>
+        <ArabicOnly><L label={t('departmentsPage.nameAr')}><input dir="rtl" className={field} value={f.name_ar} onChange={set('name_ar')} /></L></ArabicOnly>
         <L label={t('departmentsPage.code')}><input className={field} value={f.code} onChange={set('code')} /></L>
         <L label={t('departmentsPage.parent')}>
           <select className={field} value={f.parent_id} onChange={set('parent_id')}>
@@ -115,7 +116,7 @@ export default function DepartmentsPage() {
   const { pick } = useFormat()
   const qc = useQueryClient()
   const user = useAuthStore((s) => s.user)
-  const editable = canEdit(user)
+  const editable = can(user, 'departments.manage')
   const [period, setPeriod] = useState({})
   const [collapsed, setCollapsed] = useState(() => new Set())
   const [form, setForm] = useState(null) // null = closed, { dept } to edit, { parentId } to add

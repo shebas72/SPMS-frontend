@@ -3,6 +3,7 @@
     "name": "Strategy & Performance"
   },
   "nav": {
+    "roles": "Roles",
     "dashboard": "Executive dashboard",
     "strategyHouse": "Strategy house",
     "strategyMap": "Strategy map",
@@ -539,6 +540,7 @@
     "error": "Couldn't load the execution plan. Check your connection and try again."
   },
   "team": {
+    "rolesHint": "Each role's permissions are set on the Roles page.",
     "hint": "Invite colleagues from your organisation and choose what each person can do.",
     "adminOnly": "Only company admins can manage the team.",
     "inviteTitle": "Invite a colleague",
@@ -636,6 +638,9 @@
     "error": "Couldn't create your account. Try again."
   },
   "settings": {
+    "arabicEnabled": "Enable Arabic",
+    "arabicEnabledHint": "Adds the language switcher, the Arabic name fields and Arabic PDF reports. Off means English only.",
+    "arabicPlanHint": "Your plan doesn't include Arabic.",
     "fiscalYearStart": "Month the fiscal year starts",
     "fiscalYearHint": "Saved with the company profile. KPI months are still numbered 1 to 12 inside each KPI year.",
     "adminOnly": "Only company admins can change the settings.",
@@ -769,5 +774,102 @@
     "error": "Couldn't load the deleted KPIs.",
     "removed": "{{entries}} entries, {{targets}} targets",
     "col": { "code": "Code", "name": "KPI", "year": "Year", "department": "Department", "data": "Removed with it", "by": "Deleted by", "when": "Date" }
+  },
+  "roles": {
+    "intro": "Choose what each role can do. People get one role; changes apply the next time they load the app.",
+    "save": "Save changes",
+    "saved": "Saved",
+    "add": "Add role",
+    "create": "Create role",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "name": "Role name",
+    "nameAr": "Role name (Arabic)",
+    "permission": "Permission",
+    "people_one": "{{count}} person",
+    "people_other": "{{count}} people",
+    "confirmDelete": "Delete the role \"{{name}}\"?",
+    "error": "Couldn't save the roles.",
+    "planLocked": "Your plan doesn't include custom roles, so the permissions below are read-only.",
+    "adminLocked": "The Admin role always has every permission, so there is always someone who can manage the company.",
+    "group": {
+      "company": "Company",
+      "strategy": "Strategy",
+      "performance": "Performance",
+      "execution": "Execution",
+      "reports": "Reports"
+    },
+    "perm": {
+      "settings": {
+        "manage": "Change company settings"
+      },
+      "team": {
+        "manage": "Manage people and roles"
+      },
+      "access": {
+        "all_departments": "See and edit every department"
+      },
+      "strategy": {
+        "manage": "Edit the strategy"
+      },
+      "departments": {
+        "manage": "Manage departments"
+      },
+      "kpis": {
+        "manage": "Create and edit KPIs and targets",
+        "enter": "Enter KPI results"
+      },
+      "proposals": {
+        "review": "Review corrective proposals"
+      },
+      "projects": {
+        "manage": "Manage projects and initiatives"
+      },
+      "work": {
+        "own": "Update work they own or are assigned"
+      },
+      "team_report": {
+        "lead": "Lead a team"
+      },
+      "reports": {
+        "export": "Export PDF reports"
+      }
+    },
+    "hint": {
+      "settings": {
+        "manage": "Name, logo, language, fiscal year and report visibility."
+      },
+      "team": {
+        "manage": "Invite and edit users, and edit these roles."
+      },
+      "access": {
+        "all_departments": "Ignores department restrictions."
+      },
+      "strategy": {
+        "manage": "Strategy house, perspectives, core values and objectives."
+      },
+      "departments": {
+        "manage": "Add, edit and delete departments."
+      },
+      "kpis": {
+        "manage": "Within the departments they can edit.",
+        "enter": "Record monthly actual values."
+      },
+      "proposals": {
+        "review": "Approve, reject or complete proposals."
+      },
+      "projects": {
+        "manage": "Create and edit them in the departments they can edit."
+      },
+      "work": {
+        "own": "Report progress and keep the plan of items they own."
+      },
+      "team_report": {
+        "lead": "Appears as a team manager and sees the Teams section of the team report."
+      },
+      "reports": {
+        "export": "Download the dashboard and other reports as PDF."
+      }
+    }
   }
 }

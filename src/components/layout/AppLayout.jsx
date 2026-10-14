@@ -4,13 +4,14 @@ import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import {
   LayoutDashboard, Landmark, Network, Target, Building2, LineChart, ClipboardEdit, FolderKanban, ListChecks, Menu, LogOut, ListTodo, CalendarCheck, Settings as SettingsIcon, Users, Trophy,
+  ShieldCheck
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/stores/authStore'
 import { fetchMe, logout } from '@/features/auth/authApi'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import { Button } from '@/components/ui/button'
-import { isAdmin } from '@/lib/admin'
+import { can } from '@/lib/roles'
 
 
 
@@ -27,8 +28,9 @@ const NAV = [
   { to: '/initiatives', key: 'initiatives', icon: ListTodo, feature: 'projects' },
   { to: '/execution-plan', key: 'executionPlan', icon: CalendarCheck, feature: 'projects' },
   { to: '/team-performance', key: 'teamPerformance', icon: Trophy },
-  { to: '/users', key: 'users', icon: Users, admin: true },
-  { to: '/settings', key: 'settings', icon: SettingsIcon, admin: true },
+  { to: '/users', key: 'users', icon: Users, perm: 'team.manage' },
+  { to: '/roles', key: 'roles', icon: ShieldCheck, perm: 'team.manage' },
+  { to: '/settings', key: 'settings', icon: SettingsIcon, perm: 'settings.manage' },
 ]
 
 export default function AppLayout() {
@@ -82,7 +84,7 @@ export default function AppLayout() {
   : <span className="text-base font-semibold text-brand">{t('app.name')}</span>}
         </div>
         <nav className="flex flex-col gap-1 p-3">
-          {NAV.filter((i) => (!i.admin || isAdmin(user)) && (!i.feature || features[i.feature] !== false)).map(({ to, key, icon: Icon, end }) => (
+          {NAV.filter((i) => (!i.perm || can(user, i.perm)) && (!i.feature || features[i.feature] !== false)).map(({ to, key, icon: Icon, end }) => (
             <NavLink
               key={to}
               to={to}
