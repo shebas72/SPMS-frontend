@@ -188,6 +188,8 @@ export default function UsersPage() {
   const invites = useQuery({ queryKey: ['team-invites'], queryFn: async () => (await api.get('/invitations')).data.data, enabled: can(me, 'team.manage') })
   const refresh = () => { qc.invalidateQueries({ queryKey: ['team-users'] }); qc.invalidateQueries({ queryKey: ['team-invites'] }) }
   const fail = (e) => setError(msg(e, t('team.actionError')))
+  // A hook: it must run on every render, before the early returns below (calling it after them crashes the page with "Rendered more hooks").
+  const label = useRoleLabel(users.data?.meta?.role_labels)
 
   const invite = useMutation({
     mutationFn: () => api.post('/invitations', form.role === 'admin'
@@ -211,7 +213,6 @@ export default function UsersPage() {
     )
   }
   const roles = users.data.meta.roles
-  const label = useRoleLabel(users.data.meta.role_labels)
   const depts = departments.data ?? []
   const managers = users.data.data.filter((u) => u.is_active && u.is_lead)
   const accessText = (u) => {
