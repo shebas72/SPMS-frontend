@@ -30,7 +30,35 @@
     "emailRequired": "Enter your email address.",
     "passwordRequired": "Enter your password.",
     "invalid": "Email or password is incorrect.",
-    "networkError": "Can't reach the server. Check your connection and try again."
+    "networkError": "Can't reach the server. Check your connection and try again.",
+    "noAccount": "New here?",
+    "createAccount": "Create an account",
+    "resend": "Resend verification email",
+    "resendNeedsEmail": "Enter your email above first.",
+    "resendSent": "If that address is waiting for verification, a new email has been sent.",
+    "verified": {
+      "ok": "Your email is verified. Your organization is now waiting for approval; we will email you once it is approved.",
+      "expired": "That verification link has expired. Enter your email below and request a new one.",
+      "invalid": "That verification link is not valid."
+    }
+  },
+      "register": {
+    "title": "Create your organization account",
+    "subtitle": "Register your company. We will verify your email, then review your request.",
+    "companyName": "Company name",
+    "name": "Your name",
+    "password": "Password (8 characters or more)",
+    "confirm": "Confirm password",
+    "submit": "Create account",
+    "submitting": "Creating…",
+    "haveAccount": "Already have an account?",
+    "required": "This field is required.",
+    "passwordShort": "Use at least 8 characters.",
+    "mismatch": "The passwords do not match.",
+    "error": "Could not create the account. Please try again.",
+    "doneTitle": "Check your email",
+    "doneBody": "We sent a verification link to {{email}}. After you verify it, your organization will be reviewed, and you will get an email when it is approved.",
+    "backToSignIn": "Back to sign in"
   },
   "common": {
     "language": "Language",
@@ -39,6 +67,7 @@
     "pageInProgress": "This page is being built.",
     "notFoundTitle": "Page not found",
     "backHome": "Back to the dashboard"
+    
   },
   "dashboard": {
     "overall": "Overall performance",
@@ -871,5 +900,6 @@
         "export": "Download the dashboard and other reports as PDF."
       }
     }
+  
   }
 }
