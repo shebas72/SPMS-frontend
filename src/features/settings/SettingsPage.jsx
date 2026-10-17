@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/authStore'
 import { useFormat } from '@/features/dashboard/ui'
 
+
 // SaaS-only plan card. The glob finds nothing when src/saas is deleted (standalone build), so PlanCard is then undefined.
 const saasModules = import.meta.glob('../../saas/PlanCard.jsx', { eager: true })
 const PlanCard = Object.values(saasModules)[0]?.default
@@ -47,6 +48,7 @@ function Form({ company }) {
           <div className="grid h-20 w-40 place-items-center overflow-hidden rounded-md border border-line bg-white">
             {company.logo_url ? <img src={company.logo_url} alt={company.name} className="max-h-full max-w-full object-contain" /> : <span className="text-xs text-muted">{t('settings.noLogo')}</span>}
           </div>
+          
           <div className="space-y-2">
             <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" className="sr-only" aria-label={t('settings.upload')}
               onChange={(e) => { const file = e.target.files?.[0]; if (file) upload.mutate(file); e.target.value = '' }} />
@@ -56,6 +58,7 @@ function Form({ company }) {
             </div>
             <p className="text-xs text-muted">{t('settings.logoHint')}</p>
             {logoError && <p role="alert" className="text-xs text-[#A32B1E]">{logoError}</p>}
+            
           </div>
         </div>
       </section>

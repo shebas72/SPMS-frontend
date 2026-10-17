@@ -23,6 +23,7 @@ import ProfilePage from '@/features/profile/ProfilePage'
 import TeamPerformancePage from '@/features/team-performance/TeamPerformancePage'
 import RolesPage from '@/features/roles/RolesPage'
 import RegisterPage from '@/features/auth/RegisterPage'
+import BillingPage from '@/features/billing/BillingPage'
 
 const PAGES = [
   
@@ -58,6 +59,7 @@ export default function App() {
           <Route path="users" element={<UsersPage />} />
           <Route path="roles" element={<RolesPage />} />
           <Route path="settings" element={<SettingsPage />} />
+          <Route path="billing" element={<BillingPage />} />
           <Route path="profile" element={<ProfilePage />} />
         </Route>
       </Route>

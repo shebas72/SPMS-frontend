@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import api from '@/lib/api'
 import { cn } from '@/lib/utils'
+import { Link } from 'react-router-dom'
 
 // SaaS only. Loaded by features/settings/SettingsPage.jsx through import.meta.glob, so a standalone build
 // just deletes the src/saas folder and the settings page renders without this card.
@@ -55,6 +56,8 @@ export default function PlanCard() {
         </div>
       </div>
       <p className="mt-2 text-xs text-muted">{t('settings.planHint')}</p>
+      <br />
+      <Link to="/billing" className="text-sm font-medium text-brand hover:underline">Change plan</Link>
     </section>
   )
 }
