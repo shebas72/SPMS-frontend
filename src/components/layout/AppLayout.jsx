@@ -12,6 +12,8 @@ import { fetchMe, logout } from '@/features/auth/authApi'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import { Button } from '@/components/ui/button'
 import { can } from '@/lib/roles'
+import NotificationBell from '@/components/NotificationBell'
+import Banners from '@/components/Banners'
 
 
 
@@ -111,13 +113,16 @@ export default function AppLayout() {
             <Menu className="h-5 w-5" />
           </Button>
           <div className="min-w-0 flex-1 truncate text-sm text-muted">{companyLabel}</div>
+          <NotificationBell />
           <LanguageSwitcher />
+          
           <div className="hidden text-sm font-medium sm:block"><Link to="/profile" className="hidden text-sm font-medium hover:underline sm:block">{user?.name}</Link></div>
           <Button variant="outline" size="sm" onClick={signOut}>
             <LogOut className="h-4 w-4 rtl:-scale-x-100" aria-hidden="true" />
             {t('auth.signOut')}
           </Button>
         </header>
+        <Banners />
         <main className="flex-1 p-4 lg:p-8">
           <Outlet />
         </main>

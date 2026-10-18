@@ -24,6 +24,8 @@ import TeamPerformancePage from '@/features/team-performance/TeamPerformancePage
 import RolesPage from '@/features/roles/RolesPage'
 import RegisterPage from '@/features/auth/RegisterPage'
 import BillingPage from '@/features/billing/BillingPage'
+import Toaster from '@/components/Toaster'
+import NotificationsPage from '@/features/notifications/NotificationsPage'
 
 const PAGES = [
   
@@ -33,6 +35,8 @@ const PAGES = [
 
 export default function App() {
   return (
+     <>
+      <Toaster />
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
@@ -61,10 +65,13 @@ export default function App() {
           <Route path="settings" element={<SettingsPage />} />
           <Route path="billing" element={<BillingPage />} />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="notifications" element={<NotificationsPage />} /> 
         </Route>
       </Route>
+      
       <Route path="*" element={<Navigate to="/" replace />} />
       
     </Routes>
+    </>
   )
 }

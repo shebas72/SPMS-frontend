@@ -167,22 +167,30 @@ export default function BillingPage() {
                         {t('billing.payPaypal', 'Pay with PayPal')}
                       </Button>
                     )}
-                    <Button className="w-full" variant="ghost" disabled={busy} onClick={() => setRequestFor(requestFor === p.id ? null : p.id)}>
-                      {t('billing.askAdmin', 'Request upgrade from admin')}
-                    </Button>
-                    {requestFor === p.id && (
-                      <div className="space-y-2">
-                        <textarea className="min-h-20 w-full rounded-md border border-line bg-white p-2 text-sm" maxLength={1000}
-                          placeholder={t('billing.notePlaceholder', 'Optional note (for example: bank transfer, invoice details)')}
-                          value={note} onChange={(e) => setNote(e.target.value)} />
-                        <Button className="w-full" disabled={request.isPending}
-                          onClick={() => request.mutate({ plan_id: p.id, billing_cycle: cycle, note })}>
-                          {t('billing.sendRequest', 'Send request')}
+                    {data.providers.includes('manual') && (
+                      <div>
+                        <Button className="w-full" variant="ghost" disabled={busy} onClick={() => setRequestFor(requestFor === p.id ? null : p.id)}>
+                          {t('billing.askAdmin', 'Request upgrade from admin')}
                         </Button>
+                        {requestFor === p.id && (
+                          <div className="mt-2 space-y-2">
+                            <textarea className="min-h-20 w-full rounded-md border border-line bg-white p-2 text-sm" maxLength={1000}
+                              placeholder={t('billing.notePlaceholder', 'Optional note (for example: bank transfer, invoice details)')}
+                              value={note} onChange={(e) => setNote(e.target.value)} />
+                            <Button className="w-full" disabled={request.isPending}
+                              onClick={() => request.mutate({ plan_id: p.id, billing_cycle: cycle, note })}>
+                              {t('billing.sendRequest', 'Send request')}
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     )}
+                {data.providers.length === 0 && (
+                  <p className="text-center text-sm text-muted">{t('billing.unavailable', 'Upgrades are not available right now. Please contact support.')}</p>
+                )}
                   </>
                 )}
+
               </div>
             </article>
           )
