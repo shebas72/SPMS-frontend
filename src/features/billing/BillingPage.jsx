@@ -94,7 +94,7 @@ export default function BillingPage() {
         {sub ? (
           <>
             <Row label={t('billing.plan', 'Plan')}>{sub.plan}</Row>
-            <Row label={t('billing.status', 'Status')}>{sub.status}</Row>
+            <Row label={t('billing.status', 'Status')}>{t(`billing.statuses.${sub.status}`, sub.status)}</Row>
             {sub.trial_ends_at && <Row label={t('billing.trialEnds', 'Trial ends')}>{date(sub.trial_ends_at)}</Row>}
             {sub.current_period_ends_at && (
               <Row label={sub.cancel_at_period_end ? t('billing.endsOn', 'Ends on') : t('billing.renewsOn', 'Renews on')}>{date(sub.current_period_ends_at)}</Row>

@@ -22,7 +22,7 @@ export default function Banners() {
   // Only the SaaS build has this endpoint; any error simply means "no banners".
   const { data } = useQuery({
     queryKey: ['banners'],
-    queryFn: async () => (await api.get('/banners')).data.data,
+    queryFn: async () => (await api.get('/banners', { silent: true })).data.data,
     staleTime: 5 * 60_000,
     refetchOnWindowFocus: true,
     retry: false,
